@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FoodAndGrocery</string>
+    <string name="login">Login</string>
+    <string name="search_recipe">Search Recipe</string>
+    <string name="search">search</string>
+    <string name="vegan">Vegan</string>
+    <string name="like">like</string>
+    <string name="ready_to_minutes">ready to minutes</string>
+</resources>
