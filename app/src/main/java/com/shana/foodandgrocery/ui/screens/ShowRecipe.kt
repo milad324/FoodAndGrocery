@@ -2,21 +2,14 @@
 
 package com.shana.foodandgrocery.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -25,21 +18,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.shana.foodandgrocery.R
-import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.models.Recipe
+import com.shana.foodandgrocery.ui.components.recipe.InstructionView
+import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
+import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
 import com.shana.foodandgrocery.viewModels.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -49,7 +37,7 @@ import kotlinx.coroutines.launch
 fun ShowRecipe(recipeId: String?) {
     var mainViewModel = hiltViewModel<MainViewModel>()
     var recipe = remember {
-        mutableStateOf<RecipesEntity?>(null)
+        mutableStateOf<Recipe?>(null)
     }
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
@@ -95,83 +83,29 @@ fun ShowRecipe(recipeId: String?) {
             when (page) {
                 0 -> {
                     if (recipe.value != null) {
-                        Column() {
-                            Box(modifier = Modifier.height(250.dp)) {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(recipe.value!!.image)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = recipe.value!!.title,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(end = 16.dp, bottom = 16.dp),
-                                    contentAlignment = androidx.compose.ui.Alignment.BottomEnd
-                                ) {
-                                    Row {
-                                        Column(
-                                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_like),
-                                                contentDescription = stringResource(R.string.like)
-
-                                            )
-                                            Text(text = recipe.value!!.aggregateLikes.toString())
-                                        }
-                                        Spacer(modifier = Modifier.size(16.dp))
-                                        Column(
-                                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                                        ) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_clock),
-                                                contentDescription = stringResource(R.string.ready_to_minutes)
-                                            )
-                                            Text(text = recipe.value!!.readyInMinutes.toString())
-                                        }
-                                        Spacer(modifier = Modifier.size(16.dp))
-                                        Column(
-                                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                                        ) {
-                                            var color = MaterialTheme.colorScheme.onErrorContainer
-                                            if (recipe.value!!.vegan)
-                                                color = Color.Green
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_vegan),
-                                                contentDescription = stringResource(R.string.vegan),
-                                                tint = color
-                                            )
-                                            Text(
-                                                text = stringResource(R.string.vegan),
-                                                color = color
-                                            )
-                                        }
-                                    }
-                                }
-
-                            }
-                            Text(
-                                text = recipe.value!!.title,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = recipe.value!!.summary,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-
-                    } else {
-                        CircularProgressIndicator()
+                        FoodRecipeOverview(recipe = recipe.value!!)
                     }
                 }
 
-                1 -> {}
-                2 -> {}
+                1 -> {
+                    if (recipe.value != null) {
+                        LazyColumn() {
+                            recipe.value!!.extendedIngredients.forEach { item ->
+                                item {
+                                    IngredientItemView(ingredient = item)
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+
+                2 -> {
+                    if (recipe.value != null) {
+                        InstructionView(recipe = recipe.value!!)
+                    }
+                }
             }
 
         }

@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.shana.foodandgrocery.data.Repository
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.models.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -28,8 +29,8 @@ class MainViewModel @Inject constructor(
         }
     }.cachedIn(viewModelScope)
 
-    suspend fun getRecipeById(id: String): RecipesEntity {
-        return repository.local.getRecipeById(id.toInt())
+    suspend fun getRecipeById(id: String): Recipe {
+        return repository.local.getRecipeById(id.toInt()).toRecipeModel()
     }
 
 }
