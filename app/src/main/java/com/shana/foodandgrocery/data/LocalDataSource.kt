@@ -4,6 +4,9 @@ import androidx.paging.PagingSource
 import com.shana.foodandgrocery.data.database.RecipesDao
 import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.models.Recipe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
@@ -43,8 +46,8 @@ class LocalDataSource @Inject constructor(
         return recipesDao.deleteAllRecipes()
     }
 
-    suspend fun getRecipeById(id: Int): RecipesEntity {
-        return recipesDao.getRecipeById(id)
+    fun getRecipeById(id: Int): Flow<Recipe> {
+        return recipesDao.getRecipeById(id).map { it.toRecipeModel() }
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipesDao {
@@ -42,7 +43,7 @@ interface RecipesDao {
 
 
     @Query("SELECT * FROM recipes_table WHERE recipeId=:id")
-    suspend fun getRecipeById(id: Int): RecipesEntity
+    fun getRecipeById(id: Int): Flow<RecipesEntity>
 
 
 }

@@ -29,8 +29,5 @@ class MainViewModel @Inject constructor(
         }
     }.cachedIn(viewModelScope)
 
-    suspend fun getRecipeById(id: String): Recipe {
-        return repository.local.getRecipeById(id.toInt()).toRecipeModel()
-    }
 
 }

@@ -12,13 +12,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.shana.foodandgrocery.models.Recipe
+import com.shana.foodandgrocery.viewModels.MainViewModel
 
 @Composable
-fun FoodRecipeListView(recipes: LazyPagingItems<Recipe>, navController: NavHostController) {
+fun FoodRecipeListView( onRecipeClick: (Recipe) -> Unit,mainViewModel: MainViewModel = hiltViewModel()) {
+   val  recipes = mainViewModel.recipesEntityFlow.collectAsLazyPagingItems()
     val context = LocalContext.current
     LaunchedEffect(key1 = recipes.loadState) {
         if (recipes.loadState.refresh is LoadState.Error) {
@@ -43,7 +47,7 @@ fun FoodRecipeListView(recipes: LazyPagingItems<Recipe>, navController: NavHostC
             ) {
                 items(recipes.itemCount) { index ->
                     if (recipes[index] != null) {
-                        FoodRecipeView(recipe = recipes[index]!!,navController)
+                        FoodRecipeView(recipe = recipes[index]!!,onRecipeClick)
                     }
 
                 }

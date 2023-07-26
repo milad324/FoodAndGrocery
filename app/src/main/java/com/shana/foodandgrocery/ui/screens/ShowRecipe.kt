@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,27 +29,20 @@ import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
+import com.shana.foodandgrocery.viewModels.FoodRecipeViewModel
 import com.shana.foodandgrocery.viewModels.MainViewModel
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ShowRecipe(recipeId: String?) {
-    var mainViewModel = hiltViewModel<MainViewModel>()
-    var recipe = remember {
-        mutableStateOf<Recipe?>(null)
-    }
+fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
+    var recipe = recipeViewModel.recipe.observeAsState()
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
-    LaunchedEffect(key1 = recipe) {
-        mainViewModel.getRecipeById(recipeId!!).let {
-            recipe.value = it
-        }
-    }
     Column() {
         TabRow(
             selectedTabIndex = (pagerState.currentPage),
@@ -82,9 +76,7 @@ fun ShowRecipe(recipeId: String?) {
         HorizontalPager(state = pagerState, count = tabData.size) { page ->
             when (page) {
                 0 -> {
-                    if (recipe.value != null) {
                         FoodRecipeOverview(recipe = recipe.value!!)
-                    }
                 }
 
                 1 -> {
@@ -102,9 +94,7 @@ fun ShowRecipe(recipeId: String?) {
                 }
 
                 2 -> {
-                    if (recipe.value != null) {
                         InstructionView(recipe = recipe.value!!)
-                    }
                 }
             }
 

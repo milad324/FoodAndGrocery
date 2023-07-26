@@ -1,5 +1,6 @@
 package com.shana.foodandgrocery.ui.components.recipe
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
@@ -40,7 +43,8 @@ fun InstructionView(recipe: Recipe) {
             model = recipe.image,
             contentDescription = recipe.title,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            contentScale = ContentScale.Crop
         ) {
             val state = painter.state
             if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {

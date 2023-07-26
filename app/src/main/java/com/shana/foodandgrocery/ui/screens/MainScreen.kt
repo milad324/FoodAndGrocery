@@ -21,35 +21,30 @@ import com.shana.foodandgrocery.ui.components.TopAppView
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-
     val navController = rememberNavController()
     var fullScreen by remember {
         mutableStateOf(false)
     }
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Scaffold(bottomBar = {}, topBar = { TopAppView() }) {
-            NavHost(
-                navController = navController,
-                startDestination = "home",
-                modifier = Modifier.padding(it)
-
-            ) {
-                composable(Screen.MainScreen.route) {
-                    fullScreen = false
-                    HomeScreen(navController)
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+    ) {
+        composable(Screen.MainScreen.route) {
+            fullScreen = false
+            HomeScreen(onRecipeClick = {
+                navController.navigate(Screen.ShowRecipe.withArgs(it.recipeId.toString()))
+            })
+        }
+        composable(
+            route = Screen.ShowRecipe.route + "/{recipeId}",
+            arguments = listOf(
+                navArgument(name = "recipeId") {
+                    type = NavType.IntType
+                    nullable = false
                 }
-                composable(
-                    route = Screen.ShowRecipe.route + "/{id}",
-                    arguments = listOf(
-                        navArgument(name = "id") {
-                            type = NavType.StringType
-                            nullable = false
-                        }
-                    )) { entry ->
-                    fullScreen = false
-                    ShowRecipe(entry.arguments?.getString("id"))
-                }
-            }
+            )) {
+            fullScreen = false
+            ShowRecipe()
         }
     }
 }

@@ -18,16 +18,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.shana.foodandgrocery.R
+import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeListView
 import com.shana.foodandgrocery.viewModels.MainViewModel
+import javax.inject.Inject
 
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    val mainViewModel = hiltViewModel<MainViewModel>()
+fun HomeScreen(onRecipeClick: (Recipe) -> Unit) {
     Surface(modifier = Modifier.padding(8.dp)) {
-        val foodRecipe = mainViewModel.recipesEntityFlow.collectAsLazyPagingItems()
-        FoodRecipeListView(foodRecipe,navController)
+        FoodRecipeListView(onRecipeClick = onRecipeClick)
         Box(modifier = Modifier.fillMaxSize()) {
             FloatingActionButton(
                 modifier = Modifier
