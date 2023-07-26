@@ -37,12 +37,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
-    var recipe = recipeViewModel.recipe.observeAsState()
+    var recipe = recipeViewModel.recipe.observeAsState().value
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
+    if(recipe!=null)
     Column() {
         TabRow(
             selectedTabIndex = (pagerState.currentPage),
@@ -76,25 +77,22 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
         HorizontalPager(state = pagerState, count = tabData.size) { page ->
             when (page) {
                 0 -> {
-                        FoodRecipeOverview(recipe = recipe.value!!)
+                        FoodRecipeOverview()
                 }
 
                 1 -> {
-                    if (recipe.value != null) {
+
                         LazyColumn() {
-                            recipe.value!!.extendedIngredients.forEach { item ->
+                            recipe.extendedIngredients.forEach { item ->
                                 item {
                                     IngredientItemView(ingredient = item)
                                 }
                             }
-
                         }
-
-                    }
                 }
 
                 2 -> {
-                        InstructionView(recipe = recipe.value!!)
+                        InstructionView()
                 }
             }
 
