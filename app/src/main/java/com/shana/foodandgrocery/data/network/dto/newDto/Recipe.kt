@@ -90,36 +90,4 @@ data class Recipe(
     val veryPopular: Boolean,
     @Json(name = "weightWatcherSmartPoints")
     val weightWatcherSmartPoints: Int
-) {
-    fun toRecipeEntity(): RecipesEntity {
-        return RecipesEntity(
-            recipeId = id,
-            image = image,
-            veryHealthy = veryHealthy,
-            vegetarian = vegetarian,
-            vegan = vegan,
-            summary = summary,
-            sourceUrl = sourceUrl,
-            sourceName = sourceName,
-            readyInMinutes = readyInMinutes,
-            glutenFree = glutenFree,
-            dairyFree = dairyFree,
-            aggregateLikes = aggregateLikes,
-            cheap = cheap,
-            title = title,
-            extendedIngredient = extendedIngredients.map {
-                ExtendedIngredientEntity(
-                    consistency = it.consistency,
-                    original = it.original,
-                    unit = it.unit,
-                    name = it.name,
-                    image = it.image,
-                    amount = it.amount,
-                    id = it.id,
-                    aisle = it.aisle,
-                    nameClean = it.nameClean,
-                    originalName = it.originalName
-                )
-            })
-    }
-}
+)
