@@ -1,10 +1,13 @@
 package com.shana.foodandgrocery.data.database.entitis
 
 import android.os.Parcelable
+import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.shana.foodandgrocery.util.Constants.Companion.EXTENDED_INGREDIENT_TABLE
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
+
+@Entity(tableName = EXTENDED_INGREDIENT_TABLE)
 data class ExtendedIngredientEntity(
     val aisle: String?,
     val amount: Double?,
@@ -17,4 +20,4 @@ data class ExtendedIngredientEntity(
     val original: String?,
     val originalName: String?,
     val unit: String?
-) : Parcelable
+)

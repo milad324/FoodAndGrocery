@@ -6,8 +6,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
+import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
+import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
+import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -19,6 +23,14 @@ interface RecipesDao {
 
     @Upsert
     suspend fun upsertRecipes(recipesEntities: List<RecipesEntity>)
+    @Upsert
+    suspend fun upsertExtendedIngredients(extendedIngredients: List<ExtendedIngredientEntity>)
+    @Upsert
+    suspend fun upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs: List<RecipeExtendedIngredientCrossRefEntity>)
+
+    @Transaction
+    @Query("SELECT * FROM recipes_table WHERE recipeId=:recipeId")
+    fun getIngredientOfRecipe(recipeId:Int):Flow<RecipeWithExtendedIngredients>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteRecipe(favoritesEntity: FavoritesEntity)

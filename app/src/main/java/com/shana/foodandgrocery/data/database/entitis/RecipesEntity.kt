@@ -11,7 +11,7 @@ class RecipesEntity(
     val aggregateLikes: Int,
     val cheap: Boolean,
     val dairyFree: Boolean,
-    val extendedIngredient: List<ExtendedIngredientEntity>,
+    //val extendedIngredient: List<ExtendedIngredientEntity>,
     val glutenFree: Boolean,
     @PrimaryKey(autoGenerate = true)
     val recipeId: Int,
@@ -26,10 +26,10 @@ class RecipesEntity(
     val veryHealthy: Boolean,
     )
 {
-    fun toRecipeModel():Recipe{
-        return Recipe( aggregateLikes, cheap, dairyFree, extendedIngredient.map { item->
-            ExtendedIngredient(amount = item.amount, image = item.image, name = item.name, unit = item.unit, original = item.original, consistency = item.consistency)
-
-        }, glutenFree, recipeId, image, readyInMinutes, sourceName, sourceUrl, summary, title, vegan, vegetarian, veryHealthy)
-    }
+//    fun toRecipeModel():Recipe{
+//        return Recipe( aggregateLikes, cheap, dairyFree, extendedIngredient.map { item->
+//            ExtendedIngredient(amount = item.amount, image = item.image, name = item.name, unit = item.unit, original = item.original, consistency = item.consistency)
+//
+//        }, glutenFree, recipeId, image, readyInMinutes, sourceName, sourceUrl, summary, title, vegan, vegetarian, veryHealthy)
+//    }
 }
