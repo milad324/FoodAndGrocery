@@ -62,25 +62,6 @@ interface RecipesDao {
     @Query("SELECT * FROM recipes_table WHERE recipeId=:id")
     fun getRecipeById(id: Int): Flow<RecipesEntity>
 
-    suspend fun insertRecipeDto(recipesDto: List<RecipeDto>) {
-        var recipes = mutableListOf<RecipesEntity>()
-        var RecipeExtendedIngredientCrossRefs =
-            mutableListOf<RecipeExtendedIngredientCrossRefEntity>()
-        recipesDto.forEach { item ->
-            recipes.add(item.toRecipeEntity())
-            item.extendedIngredientDtos.forEach { ing ->
-                var id = insertExtendedIngredient(ing.toExtendedIngredientEntity())
-                RecipeExtendedIngredientCrossRefs.add(
-                    RecipeExtendedIngredientCrossRefEntity(
-                        recipeId = item.id,
-                        id = id.toInt()
-                    )
-                )
-            }
-        }
-        upsertRecipes(recipes)
-        upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs)
 
-    }
 
 }

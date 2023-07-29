@@ -19,7 +19,7 @@ class LocalDataSource @Inject constructor(
     val recipesDao: RecipesDao
 ) {
 
-    fun readRecipes():PagingSource<Int, RecipesEntity> {
+    fun readRecipes(): PagingSource<Int, RecipesEntity> {
         return recipesDao.readRecipes()
     }
 
@@ -49,21 +49,21 @@ class LocalDataSource @Inject constructor(
     }
 
     suspend fun insertRecipeDto(recipesDto: List<RecipeDto>) {
-        var recipes = listOf<RecipesEntity>()
-        var ingredients = listOf<ExtendedIngredientEntity>()
-
-        var RecipeExtendedIngredientCrossRefs = listOf<RecipeExtendedIngredientCrossRefEntity>()
+        var recipes = mutableListOf<RecipesEntity>()
+        var RecipeExtendedIngredientCrossRefs =
+            mutableListOf<RecipeExtendedIngredientCrossRefEntity>()
         recipesDto.forEach { item ->
-            recipes + item.toRecipeEntity()
+            recipes.add(item.toRecipeEntity())
             item.extendedIngredientDtos.forEach { ing ->
-                ingredients + ing.toExtendedIngredientEntity()
-                RecipeExtendedIngredientCrossRefs + RecipeExtendedIngredientCrossRefEntity(
-                    recipeId = item.id,
-                    id = ing.id
+                var id = recipesDao.insertExtendedIngredient(ing.toExtendedIngredientEntity())
+                RecipeExtendedIngredientCrossRefs.add(
+                    RecipeExtendedIngredientCrossRefEntity(
+                        recipeId = item.id,
+                        id = id.toInt()
+                    )
                 )
             }
         }
-        val uniqueIngredients = ingredients.toSet().toList()
         recipesDao.upsertRecipes(recipes)
         recipesDao.upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs)
 

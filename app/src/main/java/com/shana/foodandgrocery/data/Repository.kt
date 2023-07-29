@@ -2,8 +2,9 @@ package com.shana.foodandgrocery.data
 
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ActivityRetainedScoped
+@Singleton
 class Repository @Inject constructor(
     remoteDataSource: RemoteDataSource,
     localDataSource: LocalDataSource

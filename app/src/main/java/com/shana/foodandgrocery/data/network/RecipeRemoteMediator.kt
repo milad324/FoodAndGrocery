@@ -15,19 +15,20 @@ import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.shana.foodandgrocery.data.mappers.toRecipeEntity
 import com.shana.foodandgrocery.util.Constants
 import java.io.IOException
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+
 class RecipeRemoteMediator(
-    val recipesDatabase: RecipesDatabase,
-    val foodRecipesApi: FoodRecipesApi
+    private val repository: Repository
 ) : RemoteMediator<Int, RecipesEntity>() {
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RecipesEntity>
     ): MediatorResult {
         return try {
-            var recipeCount = recipesDatabase.dao.getRecipeCount()
+            var recipeCount = repository.local.getRecipeCount()
             val loadKey = when (loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
@@ -36,25 +37,20 @@ class RecipeRemoteMediator(
                 }
             }
             val queries = applyQueries(loadKey, state.config.pageSize)
-            val result = foodRecipesApi.getRecipes(queries)
-            recipesDatabase.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    recipesDatabase.dao.deleteAllRecipes()
-                }
-                val foodEntity = result.recipeDtos
-                recipesDatabase.dao.insertRecipeDto(foodEntity)
+            val result = repository.remote.getRecipes(queries)
+            if (loadType == LoadType.REFRESH) {
+                repository.local.deleteRecipes()
             }
+            val foodEntity = result.recipeDtos
+            repository.local.insertRecipeDto(foodEntity)
 
             MediatorResult.Success(endOfPaginationReached = result.recipeDtos.isEmpty())
 
         } catch (e: IOException) {
-            Log.d("milad", e.toString())
             MediatorResult.Error(e)
         } catch (e: HttpException) {
-            Log.d("milad", e.toString())
             MediatorResult.Error(e)
         } catch (e: Exception) {
-            Log.d("milad", e.toString())
             MediatorResult.Error(e)
         }
     }
