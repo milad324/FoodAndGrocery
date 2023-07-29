@@ -9,45 +9,43 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.shana.foodandgrocery.data.Repository
 import com.shana.foodandgrocery.data.database.RecipesDatabase
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.mappers.toRecipeEntity
 import com.shana.foodandgrocery.util.Constants
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 class RecipeRemoteMediator(
-    private val foodRecipeDb: RecipesDatabase,
-    private val foodRecipesApi: FoodRecipesApi
+    val recipesDatabase: RecipesDatabase,
+    val foodRecipesApi: FoodRecipesApi
 ) : RemoteMediator<Int, RecipesEntity>() {
-
-
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RecipesEntity>
     ): MediatorResult {
         return try {
-            val recipeCount = foodRecipeDb.dao.getRecipeCount()
+            var recipeCount = recipesDatabase.dao.getRecipeCount()
             val loadKey = when (loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    //TODO
                     (recipeCount / state.config.pageSize) + 1
                 }
             }
-            Log.d("milad", loadKey.toString())
             val queries = applyQueries(loadKey, state.config.pageSize)
-            Log.d("milad", queries.toString())
             val result = foodRecipesApi.getRecipes(queries)
-            foodRecipeDb.withTransaction {
+            recipesDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    foodRecipeDb.dao.deleteAllRecipes()
+                    recipesDatabase.dao.deleteAllRecipes()
                 }
-                val foodEntity = result.recipes.map { it.toRecipeEntity() }
-                foodRecipeDb.dao.upsertRecipes(foodEntity)
+                val foodEntity = result.recipeDtos
+                recipesDatabase.dao.insertRecipeDto(foodEntity)
             }
-            MediatorResult.Success(endOfPaginationReached = result.recipes.isEmpty())
+
+            MediatorResult.Success(endOfPaginationReached = result.recipeDtos.isEmpty())
 
         } catch (e: IOException) {
             Log.d("milad", e.toString())

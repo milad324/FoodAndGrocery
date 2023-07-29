@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.shana.foodandgrocery.data.Repository
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.mappers.toRecipe
 import com.shana.foodandgrocery.models.Recipe
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -18,14 +19,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val application: Application,
-    private val repository: Repository,
     pager: Pager<Int, RecipesEntity>
 
 ) : ViewModel() {
     val recipesEntityFlow = pager.flow.map { pagingData ->
         pagingData.map {
-            it.toRecipeModel()
+            it.toRecipe()
         }
     }.cachedIn(viewModelScope)
 

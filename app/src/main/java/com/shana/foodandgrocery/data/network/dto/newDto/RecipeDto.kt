@@ -1,13 +1,11 @@
 package com.shana.foodandgrocery.data.network.dto.newDto
 
 
-import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
-import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Recipe(
+data class RecipeDto(
     @Json(name = "aggregateLikes")
     val aggregateLikes: Int,
 //    @Json(name = "analyzedInstructions")
@@ -29,7 +27,7 @@ data class Recipe(
     @Json(name = "dishTypes")
     val dishTypes: List<String>,
     @Json(name = "extendedIngredients")
-    val extendedIngredients: List<ExtendedIngredient>,
+    val extendedIngredientDtos: List<ExtendedIngredientDto>,
     @Json(name = "gaps")
     val gaps: String,
     @Json(name = "glutenFree")
@@ -50,8 +48,6 @@ data class Recipe(
     val lowFodmap: Boolean,
     @Json(name = "missedIngredientCount")
     val missedIngredientCount: Int,
-//    @Json(name = "missedIngredients")
-//    val missedIngredients: List<MissedIngredient>,
     @Json(name = "occasions")
     val occasions: List<String>,
     @Json(name = "preparationMinutes")

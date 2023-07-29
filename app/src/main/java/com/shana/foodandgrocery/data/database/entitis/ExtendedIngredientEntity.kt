@@ -9,11 +9,12 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = EXTENDED_INGREDIENT_TABLE)
 data class ExtendedIngredientEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+    val idEntity:Int,
     val aisle: String?,
     val amount: Double?,
     val consistency: String?,
-    @PrimaryKey(autoGenerate = false)
-    val id: Int,
     val image: String?,
     val name: String?,
     val nameClean: String?,

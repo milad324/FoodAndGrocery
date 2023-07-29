@@ -13,6 +13,9 @@ import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.mappers.toExtendedIngredientEntity
+import com.shana.foodandgrocery.data.mappers.toRecipeEntity
+import com.shana.foodandgrocery.data.network.dto.newDto.RecipeDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,14 +26,16 @@ interface RecipesDao {
 
     @Upsert
     suspend fun upsertRecipes(recipesEntities: List<RecipesEntity>)
-    @Upsert
-    suspend fun upsertExtendedIngredients(extendedIngredients: List<ExtendedIngredientEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExtendedIngredient(extendedIngredient: ExtendedIngredientEntity): Long
+
     @Upsert
     suspend fun upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs: List<RecipeExtendedIngredientCrossRefEntity>)
 
     @Transaction
     @Query("SELECT * FROM recipes_table WHERE recipeId=:recipeId")
-    fun getIngredientOfRecipe(recipeId:Int):Flow<RecipeWithExtendedIngredients>
+    fun getIngredientOfRecipe(recipeId: Int): Flow<RecipeWithExtendedIngredients>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteRecipe(favoritesEntity: FavoritesEntity)
@@ -57,5 +62,25 @@ interface RecipesDao {
     @Query("SELECT * FROM recipes_table WHERE recipeId=:id")
     fun getRecipeById(id: Int): Flow<RecipesEntity>
 
+    suspend fun insertRecipeDto(recipesDto: List<RecipeDto>) {
+        var recipes = mutableListOf<RecipesEntity>()
+        var RecipeExtendedIngredientCrossRefs =
+            mutableListOf<RecipeExtendedIngredientCrossRefEntity>()
+        recipesDto.forEach { item ->
+            recipes.add(item.toRecipeEntity())
+            item.extendedIngredientDtos.forEach { ing ->
+                var id = insertExtendedIngredient(ing.toExtendedIngredientEntity())
+                RecipeExtendedIngredientCrossRefs.add(
+                    RecipeExtendedIngredientCrossRefEntity(
+                        recipeId = item.id,
+                        id = id.toInt()
+                    )
+                )
+            }
+        }
+        upsertRecipes(recipes)
+        upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs)
+
+    }
 
 }

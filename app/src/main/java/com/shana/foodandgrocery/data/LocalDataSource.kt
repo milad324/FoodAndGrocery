@@ -2,19 +2,24 @@ package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
 import com.shana.foodandgrocery.data.database.RecipesDao
+import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
+import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.mappers.toExtendedIngredientEntity
 import com.shana.foodandgrocery.data.mappers.toRecipe
+import com.shana.foodandgrocery.data.mappers.toRecipeEntity
+import com.shana.foodandgrocery.data.network.dto.newDto.RecipeDto
 import com.shana.foodandgrocery.models.Recipe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
-    private val recipesDao: RecipesDao
+    val recipesDao: RecipesDao
 ) {
 
-    fun readRecipes(): PagingSource<Int, RecipesEntity> {
+    fun readRecipes():PagingSource<Int, RecipesEntity> {
         return recipesDao.readRecipes()
     }
 
@@ -43,6 +48,28 @@ class LocalDataSource @Inject constructor(
         recipesDao.deleteAllFavoriteRecipes()
     }
 
+    suspend fun insertRecipeDto(recipesDto: List<RecipeDto>) {
+        var recipes = listOf<RecipesEntity>()
+        var ingredients = listOf<ExtendedIngredientEntity>()
+
+        var RecipeExtendedIngredientCrossRefs = listOf<RecipeExtendedIngredientCrossRefEntity>()
+        recipesDto.forEach { item ->
+            recipes + item.toRecipeEntity()
+            item.extendedIngredientDtos.forEach { ing ->
+                ingredients + ing.toExtendedIngredientEntity()
+                RecipeExtendedIngredientCrossRefs + RecipeExtendedIngredientCrossRefEntity(
+                    recipeId = item.id,
+                    id = ing.id
+                )
+            }
+        }
+        val uniqueIngredients = ingredients.toSet().toList()
+        recipesDao.upsertRecipes(recipes)
+        recipesDao.upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs)
+
+    }
+
+
     suspend fun deleteRecipes() {
         return recipesDao.deleteAllRecipes()
     }
@@ -50,5 +77,10 @@ class LocalDataSource @Inject constructor(
     fun getRecipeById(id: Int): Flow<Recipe> {
         return recipesDao.getIngredientOfRecipe(id).map { it.toRecipe() }
     }
+
+    suspend fun getRecipeCount(): Int {
+        return recipesDao.getRecipeCount()
+    }
+
 
 }

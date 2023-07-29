@@ -12,7 +12,7 @@ class FavoritesEntity(
     val aggregateLikes: Int,
     val cheap: Boolean,
     val dairyFree: Boolean,
-    val extendedIngredientEntity: @RawValue List<ExtendedIngredientEntity>,
+    //val extendedIngredientEntity: @RawValue List<ExtendedIngredientEntity>,
     val glutenFree: Boolean,
     @PrimaryKey(autoGenerate = false)
     val recipeId: Int,

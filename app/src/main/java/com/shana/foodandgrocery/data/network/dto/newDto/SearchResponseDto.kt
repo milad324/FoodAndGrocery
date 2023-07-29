@@ -11,7 +11,7 @@ data class SearchResponseDto(
     @Json(name = "offset")
     val offset: Int,
     @Json(name = "results")
-    val recipes: List<Recipe>,
+    val recipeDtos: List<RecipeDto>,
     @Json(name = "totalResults")
     val totalResults: Int
 )
