@@ -6,4 +6,6 @@
     <string name="vegan">Vegan</string>
     <string name="like">like</string>
     <string name="ready_to_minutes">ready to minutes</string>
+    <string name="meal_type">Meal Type</string>
+    <string name="diet_type">Diet Type</string>
 </resources>

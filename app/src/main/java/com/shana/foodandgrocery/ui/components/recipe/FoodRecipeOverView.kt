@@ -1,5 +1,6 @@
 package com.shana.foodandgrocery.ui.components.recipe
 
+import android.text.Html
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.text.parseAsHtml
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -99,7 +101,7 @@ fun FoodRecipeOverview(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                text = recipe.summary,
+                text = recipe.summary.parseAsHtml().toString(),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

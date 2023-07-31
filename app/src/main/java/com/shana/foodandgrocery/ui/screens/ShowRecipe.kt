@@ -2,6 +2,7 @@
 
 package com.shana.foodandgrocery.ui.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -34,6 +35,7 @@ import com.shana.foodandgrocery.viewModels.MainViewModel
 import kotlinx.coroutines.launch
 
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {

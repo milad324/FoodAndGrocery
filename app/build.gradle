@@ -72,7 +72,7 @@ dependencies {
 
     //Material
     implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.material:material-icons-extended:1.6.0-alpha01'
+    implementation 'androidx.compose.material:material-icons-extended:1.6.0-alpha02'
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     //Navigation
@@ -88,8 +88,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
 
     //Paging
-    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
-    implementation "androidx.paging:paging-compose:3.2.0-rc01"
+    implementation "androidx.paging:paging-runtime-ktx:3.2.0"
+    implementation "androidx.paging:paging-compose:3.2.0"
 
     //Room
     implementation("androidx.room:room-runtime:2.5.2")
@@ -106,12 +106,19 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
 
-    implementation 'androidx.compose.runtime:runtime-livedata:1.6.0-alpha01'
+    implementation 'androidx.compose.runtime:runtime-livedata:1.6.0-alpha02'
     //coil
     implementation("io.coil-kt:coil-compose:2.4.0")
     //pager
     implementation 'com.google.accompanist:accompanist-pager:0.19.0'
     implementation 'com.google.accompanist:accompanist-pager-indicators:0.19.0'
+
+    //
+    implementation 'org.jsoup:jsoup:1.16.1'
+
+    // DataStore
+    implementation "androidx.datastore:datastore-preferences:1.1.0-alpha04"
+
 }
 kapt {
     correctErrorTypes true

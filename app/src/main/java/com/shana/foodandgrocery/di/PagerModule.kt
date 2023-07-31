@@ -5,10 +5,9 @@ import androidx.annotation.RequiresExtension
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.shana.foodandgrocery.data.DataStoreRepository
 import com.shana.foodandgrocery.data.Repository
-import com.shana.foodandgrocery.data.database.RecipesDatabase
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
-import com.shana.foodandgrocery.data.network.FoodRecipesApi
 import com.shana.foodandgrocery.data.network.RecipeRemoteMediator
 import com.shana.foodandgrocery.util.Constants.Companion.DEFAULT_RECIPES_NUMBER
 import dagger.Module
@@ -26,11 +25,12 @@ object PagerModule {
     @Provides
     @Singleton
     fun provideFoodRecipePager(
-        repository: Repository
+        repository: Repository,
+        dataStoreRepository: DataStoreRepository
     ): Pager<Int, RecipesEntity> {
         return Pager(
             config = PagingConfig(pageSize = DEFAULT_RECIPES_NUMBER),
-            remoteMediator = RecipeRemoteMediator(repository),
+            remoteMediator = RecipeRemoteMediator(repository,dataStoreRepository.readMealAndDietType),
             pagingSourceFactory = {
                 repository.local.readRecipes()
             }
