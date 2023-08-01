@@ -13,9 +13,6 @@ import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
-import com.shana.foodandgrocery.data.mappers.toExtendedIngredientEntity
-import com.shana.foodandgrocery.data.mappers.toRecipeEntity
-import com.shana.foodandgrocery.data.network.dto.newDto.RecipeDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -54,6 +51,13 @@ interface RecipesDao {
 
     @Query("DELETE FROM recipes_table")
     suspend fun deleteAllRecipes()
+
+    @Query("DELETE FROM extended_ingredient_table")
+    suspend fun deleteAllExtendIngredient()
+
+
+    @Query("DELETE FROM recipe_extended_ingredient_cross_ref_table")
+    suspend fun deleteAllRecipeExtendedIngredient()
 
     @Query("SELECT COUNT(recipeId) from recipes_table")
     suspend fun getRecipeCount(): Int

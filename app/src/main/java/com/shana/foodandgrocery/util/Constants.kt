@@ -33,9 +33,8 @@ class Constants {
 
         const val PREFERENCES_NAME = "food_preferences"
         const val PREFERENCES_MEAL_TYPE = "mealType"
-        const val PREFERENCES_MEAL_TYPE_ID = "mealTypeId"
+        const val PREFERENCES_QUERY_SEARCH = "query"
         const val PREFERENCES_DIET_TYPE = "dietType"
-        const val PREFERENCES_DIET_TYPE_ID = "dietTypeId"
 
 
     }

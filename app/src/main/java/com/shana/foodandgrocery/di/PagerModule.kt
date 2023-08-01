@@ -29,8 +29,8 @@ object PagerModule {
         dataStoreRepository: DataStoreRepository
     ): Pager<Int, RecipesEntity> {
         return Pager(
-            config = PagingConfig(pageSize = DEFAULT_RECIPES_NUMBER),
-            remoteMediator = RecipeRemoteMediator(repository,dataStoreRepository.readMealAndDietType),
+            config = PagingConfig(pageSize = DEFAULT_RECIPES_NUMBER, initialLoadSize = 50),
+            remoteMediator = RecipeRemoteMediator(repository, dataStoreRepository),
             pagingSourceFactory = {
                 repository.local.readRecipes()
             }

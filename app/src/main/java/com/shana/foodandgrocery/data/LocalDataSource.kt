@@ -2,7 +2,6 @@ package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
 import com.shana.foodandgrocery.data.database.RecipesDao
-import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
@@ -70,7 +69,9 @@ class LocalDataSource @Inject constructor(
     }
 
 
-    suspend fun deleteRecipes() {
+    suspend fun clearRecipeWithIngredients() {
+        recipesDao.deleteAllRecipeExtendedIngredient()
+        recipesDao.deleteAllExtendIngredient()
         return recipesDao.deleteAllRecipes()
     }
 

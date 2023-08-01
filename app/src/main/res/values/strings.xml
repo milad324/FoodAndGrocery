@@ -8,4 +8,5 @@
     <string name="ready_to_minutes">ready to minutes</string>
     <string name="meal_type">Meal Type</string>
     <string name="diet_type">Diet Type</string>
+    <string name="meal_name">Meal Name</string>
 </resources>
