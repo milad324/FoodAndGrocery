@@ -1,6 +1,7 @@
 package com.shana.foodandgrocery.ui.components.recipe
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -34,21 +36,31 @@ import com.shana.foodandgrocery.util.Constants.Companion.BASE_IMAGE_URL
 
 
 @Composable
-fun IngredientItemView(ingredient: ExtendedIngredient) {
+fun IngredientItemView(
+    ingredient: ExtendedIngredient,
+    isSelected: Boolean,
+    handleSelect: (ExtendedIngredient) -> Unit
+) {
     Card(
         modifier = Modifier
+            .clickable { handleSelect(ingredient) }
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(8.dp), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
             contentColor = MaterialTheme.colorScheme.primary,
-            containerColor = MaterialTheme.colorScheme.onPrimary
-        )
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+
+
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-
+                .border(
+                    1.dp,
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
+                )
         ) {
 
             SubcomposeAsyncImage(

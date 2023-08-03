@@ -36,8 +36,8 @@ class RecipeRemoteMediator(
             Log.d("milad", "called")
             val lastItem = state.lastItemOrNull()
             val loadKey = when (loadType) {
-                LoadType.REFRESH -> null
-                LoadType.PREPEND -> null
+                LoadType.REFRESH -> 1
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     (repository.local.getRecipeCount() / state.config.pageSize) + 1
                 }

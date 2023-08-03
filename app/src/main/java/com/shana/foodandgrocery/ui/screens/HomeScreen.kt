@@ -24,7 +24,6 @@ import com.shana.foodandgrocery.viewModels.MainViewModel
 
 @Composable
 fun HomeScreen(
-
     onRecipeClick: (Recipe) -> Unit,
     onSearchFilterClick: () -> Unit,
 ) {
