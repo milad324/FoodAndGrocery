@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RecipeDto(
     @Json(name = "aggregateLikes")
-    val aggregateLikes: Int,
+    val aggregateLikes: Long,
 //    @Json(name = "analyzedInstructions")
 //    val analyzedInstructions: List<AnalyzedInstruction>?,
     @Json(name = "author")
@@ -35,7 +35,7 @@ data class RecipeDto(
     @Json(name = "healthScore")
     val healthScore: Int,
     @Json(name = "id")
-    val id: Int,
+    val id: Long,
     @Json(name = "image")
     val image: String,
     @Json(name = "imageType")

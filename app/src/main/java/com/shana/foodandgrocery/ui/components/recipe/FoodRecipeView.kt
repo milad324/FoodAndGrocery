@@ -56,7 +56,6 @@ fun FoodRecipeView(recipe: Recipe, onRecipeClick: (Recipe) -> Unit) {
                     .data(recipe.image)
                     .crossfade(true)
                     .build(),
-                //placeholder = painterResource(R.drawable.placeholder),
                 contentDescription = recipe.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.width(150.dp)

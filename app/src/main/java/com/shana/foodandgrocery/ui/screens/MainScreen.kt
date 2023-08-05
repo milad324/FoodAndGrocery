@@ -1,14 +1,34 @@
 package com.shana.foodandgrocery.ui.screens
 
 
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.shana.foodandgrocery.NavGraph
 import com.shana.foodandgrocery.config.Screen
 
 
@@ -16,36 +36,65 @@ import com.shana.foodandgrocery.config.Screen
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    var fullScreen by remember {
-        mutableStateOf(false)
-    }
-    NavHost(
-        navController = navController,
-        startDestination = "home",
-    ) {
-        composable(Screen.MainScreen.route) {
-            fullScreen = false
-            HomeScreen(onRecipeClick = {
-                navController.navigate(Screen.ShowRecipe.withArgs(it.recipeId.toString()))
-            }, onSearchFilterClick = {
-                navController.navigate(Screen.SearchFilterScreen.route)
-            })
-        }
-        composable(
-            route = Screen.ShowRecipe.route + "/{recipeId}",
-            arguments = listOf(
-                navArgument(name = "recipeId") {
-                    type = NavType.IntType
-                    nullable = false
-                }
-            )) {
-            fullScreen = false
-            ShowRecipe()
-        }
-        composable(
-            route = Screen.SearchFilterScreen.route
-        ) {
-            SearchScreen()
+    Scaffold(bottomBar = {
+        BottomBar(navController = navController)
+    }) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            color = MaterialTheme.colorScheme.background,
+
+            ) {
+            NavGraph(navController = navController)
         }
     }
+}
+
+@Composable
+fun BottomBar(navController: NavHostController) {
+    val screens = listOf(
+        Screen.MainScreen,
+        Screen.SearchFilterScreen,
+        Screen.FavoriteScreen,
+        Screen.ShoppingScreen,
+        Screen.Planner
+    )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    BottomNavigation {
+        screens.forEach { screen ->
+            AddItem(
+                screen = screen,
+                currentDestination = currentDestination,
+                navController = navController
+            )
+        }
+    }
+}
+
+@Composable
+fun RowScope.AddItem(
+    screen: Screen,
+    currentDestination: NavDestination?,
+    navController: NavHostController
+) {
+    BottomNavigationItem(
+        onClick = {
+            navController.navigate(screen.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        },
+        icon = {
+            Icon(
+                painter = painterResource(id = screen.icon),
+                contentDescription = screen.title
+            )
+        },
+        selected = currentDestination?.hierarchy?.any {
+            it.route == screen.route
+        } == true,
+        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+    )
 }

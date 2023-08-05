@@ -6,6 +6,6 @@ import com.shana.foodandgrocery.util.Constants.Companion.RECIPES_EXTENDED_INGRED
 
 @Entity(tableName = RECIPES_EXTENDED_INGREDIENT_CROSS_REF_TABLE, primaryKeys = ["recipeId", "id"])
 data class RecipeExtendedIngredientCrossRefEntity(
-    val recipeId: Int,
-    val id: Int,
+    val recipeId: Long,
+    val id: Long,
 )

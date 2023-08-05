@@ -54,6 +54,7 @@ import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
+import com.shana.foodandgrocery.ui.components.recipe.selectedShoppingItem
 import com.shana.foodandgrocery.viewModels.FoodRecipeViewModel
 import com.shana.foodandgrocery.viewModels.MainViewModel
 import kotlinx.coroutines.launch
@@ -116,8 +117,6 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                 sheetPeekHeight = BottomSheetScaffoldDefaults.SheetPeekHeight,
                                 sheetContent = {
                                     Column(modifier = Modifier.fillMaxWidth()) {
-
-
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -143,16 +142,14 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                         LazyColumn() {
                                             recipeViewModel.selectedIngredients.forEach { item ->
                                                 item {
-                                                    IngredientItemView(
+                                                    selectedShoppingItem(
                                                         ingredient = item,
-                                                        recipeViewModel.selectedIngredients.contains(
-                                                            item
-                                                        ),
-                                                        handleSelect = {
-                                                            recipeViewModel.handleSelectIngredient(
+                                                        handleRemove = {
+                                                            recipeViewModel.handleRemoveIngredient(
                                                                 it
                                                             )
-                                                        })
+                                                        }
+                                                    )
                                                 }
                                             }
                                         }

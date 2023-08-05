@@ -15,7 +15,7 @@ class FavoritesEntity(
     //val extendedIngredientEntity: @RawValue List<ExtendedIngredientEntity>,
     val glutenFree: Boolean,
     @PrimaryKey(autoGenerate = false)
-    val recipeId: Int,
+    val recipeId: Long,
     val image: String,
     val readyInMinutes: Int,
     val sourceName: String?,

@@ -9,4 +9,5 @@
     <string name="meal_type">Meal Type</string>
     <string name="diet_type">Diet Type</string>
     <string name="meal_name">Meal Name</string>
+    <string name="remove_ingredient">remove ingredient</string>
 </resources>

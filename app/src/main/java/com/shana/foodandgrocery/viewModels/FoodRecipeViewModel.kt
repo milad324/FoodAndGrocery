@@ -25,6 +25,10 @@ class FoodRecipeViewModel @Inject constructor(
         }
     }
 
+    fun handleRemoveIngredient(extendedIngredient: ExtendedIngredient) {
+        selectedIngredients.remove(extendedIngredient)
+    }
+
     companion object {
         private const val RECIPE_ID_SAVED_STATE_KEY = "recipeId"
     }

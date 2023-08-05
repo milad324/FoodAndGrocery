@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 data class ExtendedIngredientEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    val idEntity:Int,
+    val idEntity:Long,
     val aisle: String?,
     val amount: Double?,
     val consistency: String?,

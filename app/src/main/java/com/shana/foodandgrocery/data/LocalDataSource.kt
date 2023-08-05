@@ -58,7 +58,7 @@ class LocalDataSource @Inject constructor(
                 RecipeExtendedIngredientCrossRefs.add(
                     RecipeExtendedIngredientCrossRefEntity(
                         recipeId = item.id,
-                        id = id.toInt()
+                        id = id
                     )
                 )
             }

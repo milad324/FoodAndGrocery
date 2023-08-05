@@ -5,12 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Recipe(
-    val aggregateLikes: Int,
+    val aggregateLikes: Long,
     val cheap: Boolean,
     val dairyFree: Boolean,
     val extendedIngredients: List<ExtendedIngredient>,
     val glutenFree: Boolean,
-    val recipeId: Int,
+    val recipeId: Long,
     val image: String,
     val readyInMinutes: Int,
     val sourceName: String?,
