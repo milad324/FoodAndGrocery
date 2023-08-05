@@ -1,6 +1,7 @@
 package com.shana.foodandgrocery.data.mappers
 
 import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
+import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.shana.foodandgrocery.data.network.dto.newDto.ExtendedIngredientDto
@@ -91,4 +92,31 @@ fun RecipesEntity.toRecipe(): Recipe {
     )
 }
 
-
+fun Recipe.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
+    return FavoriteRecipeEntity(
+        aggregateLikes = aggregateLikes,
+        cheap = cheap,
+        dairyFree = dairyFree,
+        glutenFree = glutenFree,
+        title = title,
+        recipeId = recipeId,
+        image = image,
+        extendedIngredientsEntity = extendedIngredients.map { it ->
+            ExtendedIngredient(
+                image = it.image,
+                unit = it.unit,
+                original = it.original,
+                consistency = it.consistency,
+                amount = it.amount,
+                name = it.name
+            )
+        },
+        readyInMinutes = readyInMinutes,
+        sourceName = sourceName,
+        sourceUrl = sourceUrl,
+        summary = summary,
+        vegan = vegan,
+        vegetarian = vegetarian,
+        veryHealthy = veryHealthy
+    )
+}

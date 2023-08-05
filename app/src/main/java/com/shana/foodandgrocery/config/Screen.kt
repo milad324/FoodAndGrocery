@@ -10,13 +10,13 @@ sealed class Screen(val route: String, val title: String, val icon: Int) {
         Screen(route = "SearchRecipe", title = "Search", icon = R.drawable.ic_search)
 
     object SearchFilterScreen :
-        Screen(route = "SearchFilter", title = "Search Filter", icon = R.drawable.ic_search)
+        Screen(route = "SearchFilter", title = "Search", icon = R.drawable.ic_search)
 
     object FavoriteScreen :
         Screen(route = "FavoriteScreen", title = "Favorite", icon = R.drawable.ic_favorite)
 
     object ShoppingScreen :
-        Screen(route = "ShoppingScreen", title = "Shopping List", icon = R.drawable.ic_add_shopping)
+        Screen(route = "ShoppingScreen", title = "Shopping", icon = R.drawable.ic_add_shopping)
 
     object Planner : Screen(route = "Planner", title = "Planner", icon = R.drawable.ic_planner)
 

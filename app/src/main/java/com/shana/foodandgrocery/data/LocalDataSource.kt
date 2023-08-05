@@ -2,7 +2,7 @@ package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
 import com.shana.foodandgrocery.data.database.RecipesDao
-import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
+import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.shana.foodandgrocery.data.mappers.toExtendedIngredientEntity
@@ -22,7 +22,7 @@ class LocalDataSource @Inject constructor(
         return recipesDao.readRecipes()
     }
 
-    fun readFavoriteRecipes(): PagingSource<Int, FavoritesEntity> {
+    fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity> {
         return recipesDao.readFavoriteRecipes()
     }
 
@@ -34,13 +34,13 @@ class LocalDataSource @Inject constructor(
         recipesDao.insertRecipe(recipesEntity)
     }
 
-    suspend fun insertFavoriteRecipes(favoritesEntity: FavoritesEntity) {
-        recipesDao.insertFavoriteRecipe(favoritesEntity)
+    suspend fun insertFavoriteRecipes(favoriteRecipeEntity: FavoriteRecipeEntity) {
+        recipesDao.insertFavoriteRecipe(favoriteRecipeEntity)
     }
 
 
-    suspend fun deleteFavoriteRecipe(favoritesEntity: FavoritesEntity) {
-        recipesDao.deleteFavoriteRecipe(favoritesEntity)
+    suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity) {
+        recipesDao.deleteFavoriteRecipe(favoriteRecipeEntity)
     }
 
     suspend fun deleteAllFavoriteRecipes() {

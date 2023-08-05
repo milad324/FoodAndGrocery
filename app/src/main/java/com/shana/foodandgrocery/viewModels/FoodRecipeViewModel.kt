@@ -16,6 +16,7 @@ class FoodRecipeViewModel @Inject constructor(
 ) : ViewModel() {
     private var recipeId: Int? = savedStateHandle[RECIPE_ID_SAVED_STATE_KEY]
     var recipe = repository.local.getRecipeById(recipeId ?: 1).asLiveData()
+
     val selectedIngredients = mutableStateListOf<ExtendedIngredient>()
     fun handleSelectIngredient(extendedIngredient: ExtendedIngredient) {
         if (selectedIngredients.contains(extendedIngredient)) {

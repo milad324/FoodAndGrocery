@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -95,6 +96,17 @@ fun RowScope.AddItem(
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
-        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        label = {
+            Text(
+                text = screen.title,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (currentDestination?.hierarchy?.any {
+                        it.route == screen.route
+                    } == true) LocalContentColor.current else LocalContentColor.current.copy(
+                    alpha = ContentAlpha.disabled
+                )
+            )
+        }
     )
 }

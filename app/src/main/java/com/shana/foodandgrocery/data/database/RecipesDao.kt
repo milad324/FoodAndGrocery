@@ -9,7 +9,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
-import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
+import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
@@ -35,16 +35,16 @@ interface RecipesDao {
     fun getIngredientOfRecipe(recipeId: Int): Flow<RecipeWithExtendedIngredients>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavoriteRecipe(favoritesEntity: FavoritesEntity)
+    suspend fun insertFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
 
     @Query("SELECT * FROM recipes_table ORDER BY recipeId ASC")
     fun readRecipes(): PagingSource<Int, RecipesEntity>
 
     @Query("SELECT * FROM favorite_recipes_table ORDER BY recipeId ASC")
-    fun readFavoriteRecipes(): PagingSource<Int, FavoritesEntity>
+    fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity>
 
     @Delete
-    suspend fun deleteFavoriteRecipe(favoritesEntity: FavoritesEntity)
+    suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
 
     @Query("DELETE FROM favorite_recipes_table")
     suspend fun deleteAllFavoriteRecipes()

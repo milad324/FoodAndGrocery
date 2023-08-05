@@ -15,11 +15,8 @@ companion object{
         Types.newParameterizedType(List::class.java, ExtendedIngredientEntity::class.java)
     private val adapter: JsonAdapter<List<ExtendedIngredientEntity>> = moshi.adapter(type)
 }
-
-
     @TypeConverter
     fun extendedIngredientEntityToString(extendedIngredientEntities: List<ExtendedIngredientEntity>): String {
-
         return adapter.toJson(extendedIngredientEntities)
     }
 

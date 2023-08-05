@@ -6,16 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
-import com.shana.foodandgrocery.data.database.entitis.FavoritesEntity
+import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.shana.foodandgrocery.util.Constants.Companion.DATABASE_NAME
 
 @Database(
-    entities = [RecipesEntity::class, FavoritesEntity::class, ExtendedIngredientEntity::class, RecipeExtendedIngredientCrossRefEntity::class],
+    entities = [RecipesEntity::class, FavoriteRecipeEntity::class, ExtendedIngredientEntity::class, RecipeExtendedIngredientCrossRefEntity::class],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(RecipesTypeConverter::class)
 abstract class RecipesDatabase : RoomDatabase() {
     abstract val dao: RecipesDao
 
