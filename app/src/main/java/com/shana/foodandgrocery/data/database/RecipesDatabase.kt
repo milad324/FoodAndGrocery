@@ -16,7 +16,7 @@ import com.shana.foodandgrocery.util.Constants.Companion.DATABASE_NAME
     version = 1,
     exportSchema = false
 )
-@TypeConverters(RecipesTypeConverter::class)
+@TypeConverters(ExtendedIngredientTypeConverter::class)
 abstract class RecipesDatabase : RoomDatabase() {
     abstract val dao: RecipesDao
 

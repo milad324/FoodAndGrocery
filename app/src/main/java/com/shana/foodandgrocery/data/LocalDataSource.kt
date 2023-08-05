@@ -22,6 +22,10 @@ class LocalDataSource @Inject constructor(
         return recipesDao.readRecipes()
     }
 
+    fun checkRecipeIsFavorite(id: Int): Flow<Boolean> {
+        return recipesDao.checkRecipeIsFavorite(id)
+    }
+
     fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity> {
         return recipesDao.readFavoriteRecipes()
     }

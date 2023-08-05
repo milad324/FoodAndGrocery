@@ -37,14 +37,19 @@ interface RecipesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
 
+    @Delete
+    suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
+
+    @Query("SELECT EXISTS(SELECT * FROM favorite_recipes_table WHERE recipeId = :id)")
+    fun checkRecipeIsFavorite(id: Int):Flow<Boolean>
+
     @Query("SELECT * FROM recipes_table ORDER BY recipeId ASC")
     fun readRecipes(): PagingSource<Int, RecipesEntity>
 
     @Query("SELECT * FROM favorite_recipes_table ORDER BY recipeId ASC")
     fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity>
 
-    @Delete
-    suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
+
 
     @Query("DELETE FROM favorite_recipes_table")
     suspend fun deleteAllFavoriteRecipes()
