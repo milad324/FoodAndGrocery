@@ -60,7 +60,6 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
                 selectedQuery
             )
         }
-
     suspend fun applyQueries(
         page: Int,
         perPage: Int,

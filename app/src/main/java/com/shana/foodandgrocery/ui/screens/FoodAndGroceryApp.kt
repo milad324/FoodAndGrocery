@@ -18,24 +18,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.NavGraph
 import com.shana.foodandgrocery.config.Screen
+import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
+import com.shana.foodandgrocery.rememberFoodAndGroceryState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun FoodAndGroceryApp(
+    networkMonitor: NetworkMonitor,
+    appState: FoodAndGroceryState = rememberFoodAndGroceryState(networkMonitor = networkMonitor)
+) {
     val navController = rememberNavController()
     Scaffold(bottomBar = {
         BottomBar(navController = navController)

@@ -1,4 +1,4 @@
-package com.shana.foodandgrocery.ui.screens
+package com.shana.foodandgrocery.ui.screens.planner
 
 import androidx.compose.runtime.Composable
 

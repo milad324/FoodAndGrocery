@@ -1,9 +1,12 @@
 package com.shana.foodandgrocery.di
 
 import com.shana.foodandgrocery.data.network.FoodRecipesApi
+import com.shana.foodandgrocery.data.networkMonitoring.ConnectivityManagerNetworkMonitor
+import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
 import com.shana.foodandgrocery.util.Constants.Companion.BASE_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,5 +57,7 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): FoodRecipesApi {
         return retrofit.create(FoodRecipesApi::class.java)
     }
+
+
 
 }

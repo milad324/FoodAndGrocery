@@ -7,11 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.shana.foodandgrocery.config.Screen
-import com.shana.foodandgrocery.ui.screens.FavoriteScreen
-import com.shana.foodandgrocery.ui.screens.HomeScreen
-import com.shana.foodandgrocery.ui.screens.PlannerScreen
-import com.shana.foodandgrocery.ui.screens.SearchScreen
-import com.shana.foodandgrocery.ui.screens.ShoppingScreen
+import com.shana.foodandgrocery.ui.screens.favorite.FavoriteScreen
+import com.shana.foodandgrocery.ui.screens.home.HomeScreen
+import com.shana.foodandgrocery.ui.screens.planner.PlannerScreen
+import com.shana.foodandgrocery.ui.screens.search.SearchScreen
+import com.shana.foodandgrocery.ui.screens.shopping.ShoppingScreen
 import com.shana.foodandgrocery.ui.screens.ShowRecipe
 
 

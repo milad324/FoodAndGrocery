@@ -1,4 +1,4 @@
-package com.shana.foodandgrocery.ui.screens
+package com.shana.foodandgrocery.ui.screens.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
