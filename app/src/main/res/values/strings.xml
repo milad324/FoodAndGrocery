@@ -10,4 +10,5 @@
     <string name="diet_type">Diet Type</string>
     <string name="meal_name">Meal Name</string>
     <string name="remove_ingredient">remove ingredient</string>
+    <string name="you_aren_t_connected_to_the_internet">You aren’t connected to the internet</string>
 </resources>

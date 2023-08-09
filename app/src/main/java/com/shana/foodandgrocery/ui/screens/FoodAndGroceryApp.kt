@@ -1,6 +1,6 @@
 package com.shana.foodandgrocery.ui.screens
 
-
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,43 +12,58 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.NavGraph
+import com.shana.foodandgrocery.R
 import com.shana.foodandgrocery.config.Screen
 import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
 import com.shana.foodandgrocery.rememberFoodAndGroceryState
+import com.shana.foodandgrocery.ui.components.error.ErrorView
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodAndGroceryApp(
     networkMonitor: NetworkMonitor,
     appState: FoodAndGroceryState = rememberFoodAndGroceryState(networkMonitor = networkMonitor)
 ) {
-    val navController = rememberNavController()
+
+    val isOffline by appState.isOffline.collectAsState()
     Scaffold(bottomBar = {
-        BottomBar(navController = navController)
+        BottomBar(navController = appState.navController)
     }) { contentPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding),
             color = MaterialTheme.colorScheme.background,
-
-            ) {
-            NavGraph(navController = navController)
+        ) {
+            if (isOffline) {
+                ErrorView(errorMessage = stringResource(R.string.you_aren_t_connected_to_the_internet))
+            } else {
+                NavGraph(navController = appState.navController)
+            }
         }
     }
 }
