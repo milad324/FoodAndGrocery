@@ -15,14 +15,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,80 +52,104 @@ fun FoodAndGroceryApp(
     appState: FoodAndGroceryState = rememberFoodAndGroceryState(networkMonitor = networkMonitor)
 ) {
 
-    val isOffline by appState.isOffline.collectAsState()
-    Scaffold(bottomBar = {
-        BottomBar(navController = appState.navController)
-    }) { contentPadding ->
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+
+    // If user is not connected to the internet show a snack bar to inform them.
+    val notConnectedMessage = stringResource(R.string.you_aren_t_connected_to_the_internet)
+    LaunchedEffect(isOffline) {
+        if (isOffline) {
+            snackbarHostState.showSnackbar(
+                message = notConnectedMessage,
+                duration = SnackbarDuration.Indefinite,
+            )
+        }
+    }
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                destinations = appState.topLevelDestinations,
+                onNavigateToDestination = appState::navigateToTopLevelDestination,
+                currentDestination = appState.currentDestination,
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { contentPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding),
             color = MaterialTheme.colorScheme.background,
         ) {
-            if (isOffline) {
-                ErrorView(errorMessage = stringResource(R.string.you_aren_t_connected_to_the_internet))
-            } else {
-                NavGraph(navController = appState.navController)
-            }
+            NavGraph(
+                appState = appState,
+                onShowSnackbar = { message, action ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = action,
+                        duration = SnackbarDuration.Short,
+                    ) == SnackbarResult.ActionPerformed
+                })
         }
     }
 }
 
 @Composable
-fun BottomBar(navController: NavHostController) {
-    val screens = listOf(
-        Screen.MainScreen,
-        Screen.SearchFilterScreen,
-        Screen.FavoriteScreen,
-        Screen.ShoppingScreen,
-        Screen.Planner
-    )
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+fun BottomBar(
+    destinations: List<Screen>,
+    onNavigateToDestination: (Screen) -> Unit,
+    currentDestination: NavDestination?,
+    modifier: Modifier = Modifier,
+) {
+
     BottomNavigation {
-        screens.forEach { screen ->
+        destinations.forEach { screen ->
+            val selected = currentDestination.isTopLevelDestinationInHierarchy(screen)
             AddItem(
-                screen = screen,
-                currentDestination = currentDestination,
-                navController = navController
-            )
+                selected = selected,
+                onClick = { onNavigateToDestination(screen) },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = screen.icon),
+                        contentDescription = screen.title
+                    )
+                },
+                label = {
+                    Text(
+                        text = screen.title,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (selected) LocalContentColor.current else
+                            LocalContentColor.current.copy(
+                                alpha = ContentAlpha.disabled
+                            )
+                    )
+                },
+
+                )
+
         }
     }
 }
 
 @Composable
 fun RowScope.AddItem(
-    screen: Screen,
-    currentDestination: NavDestination?,
-    navController: NavHostController
+    selected: Boolean,
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
 ) {
     BottomNavigationItem(
-        onClick = {
-            navController.navigate(screen.route) {
-                popUpTo(navController.graph.findStartDestination().id)
-                launchSingleTop = true
-            }
-        },
-        icon = {
-            Icon(
-                painter = painterResource(id = screen.icon),
-                contentDescription = screen.title
-            )
-        },
-        selected = currentDestination?.hierarchy?.any {
-            it.route == screen.route
-        } == true,
+        onClick = onClick,
+        icon = icon,
+        selected = selected,
         unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-        label = {
-            Text(
-                text = screen.title,
-                style = MaterialTheme.typography.bodySmall,
-                color = if (currentDestination?.hierarchy?.any {
-                        it.route == screen.route
-                    } == true) LocalContentColor.current else LocalContentColor.current.copy(
-                    alpha = ContentAlpha.disabled
-                )
-            )
-        }
+        label = label
     )
 }
+
+private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: Screen) =
+    this?.hierarchy?.any {
+        it.route?.contains(destination.route, true) ?: false
+    } ?: false

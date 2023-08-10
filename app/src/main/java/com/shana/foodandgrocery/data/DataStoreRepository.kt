@@ -70,9 +70,9 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         queries[Constants.QUERY_DIET] = getMyCustomData(PreferenceKeys.selectedDietType)
         queries[Constants.QUERY_NUMBER] = perPage.toString()
         queries[Constants.QUERY_OFFSET] = ((page - 1) * perPage).toString()
-        queries[Constants.QUERY_API_KEY] = "43ec35ab36ba47af89235ed924740d74"
+        //queries[Constants.QUERY_API_KEY] = "43ec35ab36ba47af89235ed924740d74"
         //queries[Constants.QUERY_API_KEY] = "a2b92c218629402a8cb478e61e331114"
-       // queries[Constants.QUERY_API_KEY] = "d11026d278134398b1bf50c0f7cad410"
+       queries[Constants.QUERY_API_KEY] = "d11026d278134398b1bf50c0f7cad410"
         queries[Constants.QUERY_ADD_RECIPE_INFORMATION] = "true"
         queries[Constants.QUERY_FILL_INGREDIENTS] = "true"
         return queries

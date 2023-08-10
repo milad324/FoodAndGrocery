@@ -20,6 +20,7 @@ import com.shana.foodandgrocery.ui.screens.home.navigation.navigateHome
 import com.shana.foodandgrocery.ui.screens.planner.navigation.navigatePlanner
 import com.shana.foodandgrocery.ui.screens.search.navigation.navigateSearch
 import com.shana.foodandgrocery.ui.screens.shopping.navigation.navigateShopping
+import com.shana.foodandgrocery.util.Constants.Companion.START_DESTINATION
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -46,6 +47,7 @@ class FoodAndGroceryState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
+    val startDestination: String = START_DESTINATION
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController
@@ -53,7 +55,6 @@ class FoodAndGroceryState(
     val currentTopLevelDestination: Screen?
         @Composable get() = when (currentDestination?.route) {
             Screen.MainScreen.route -> Screen.MainScreen
-            Screen.ShowRecipe.route -> Screen.ShowRecipe
             Screen.ShoppingScreen.route -> Screen.ShoppingScreen
             Screen.FavoriteScreen.route -> Screen.FavoriteScreen
             Screen.Planner.route -> Screen.Planner
@@ -68,8 +69,13 @@ class FoodAndGroceryState(
             initialValue = false,
         )
 
+    /**
+     * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
+     * route.
+     */
+    val topLevelDestinations: List<Screen> = Screen.values().asList()
     fun navigateToTopLevelDestination(topLevelDestination: Screen) {
-        trace("Navigation: ${topLevelDestination.route}") {
+        trace("Navigation: ${topLevelDestination}") {
             val topLevelNavOptions = navOptions {
                 // Pop up to the start destination of the graph to
                 // avoid building up a large stack of destinations
@@ -83,12 +89,14 @@ class FoodAndGroceryState(
                 // Restore state when reselecting a previously selected item
                 restoreState = true
             }
-            when (topLevelDestination.route) {
-                Screen.MainScreen.route -> navController.navigateHome(topLevelNavOptions)
-                Screen.ShoppingScreen.route -> navController.navigateShopping(topLevelNavOptions)
-                Screen.FavoriteScreen.route -> navController.navigateFavorite(topLevelNavOptions)
-                Screen.Planner.route -> navController.navigatePlanner(topLevelNavOptions)
-                Screen.SearchFilterScreen.route -> navController.navigateSearch(topLevelNavOptions)
+            when (topLevelDestination) {
+                Screen.MainScreen -> navController.navigateHome(topLevelNavOptions)
+                Screen.ShoppingScreen -> navController.navigateShopping(topLevelNavOptions)
+                Screen.FavoriteScreen -> navController.navigateFavorite(topLevelNavOptions)
+                Screen.Planner -> navController.navigatePlanner(topLevelNavOptions)
+                Screen.SearchFilterScreen -> navController.navigateSearch(topLevelNavOptions)
+                //must be move
+                // Screen.ShowRecipe -> navController.navigateSearch(topLevelNavOptions)
             }
         }
     }

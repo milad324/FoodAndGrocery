@@ -24,7 +24,7 @@ import com.shana.foodandgrocery.viewModels.MainViewModel
 
 @Composable
 fun FoodRecipeListView(
-    onRecipeClick: (Recipe) -> Unit,
+    onRecipeClick: (Long) -> Unit,
     mainViewModel: MainViewModel = hiltViewModel()
 
 ) {

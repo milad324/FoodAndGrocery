@@ -22,7 +22,7 @@ class LocalDataSource @Inject constructor(
         return recipesDao.readRecipes()
     }
 
-    fun checkRecipeIsFavorite(id: Int): Flow<Boolean> {
+    fun checkRecipeIsFavorite(id: Long): Flow<Boolean> {
         return recipesDao.checkRecipeIsFavorite(id)
     }
 
@@ -79,7 +79,7 @@ class LocalDataSource @Inject constructor(
         return recipesDao.deleteAllRecipes()
     }
 
-    fun getRecipeById(id: Int): Flow<Recipe> {
+    fun getRecipeById(id: Long): Flow<Recipe> {
         return recipesDao.getIngredientOfRecipe(id).map { it.toRecipe() }
     }
 

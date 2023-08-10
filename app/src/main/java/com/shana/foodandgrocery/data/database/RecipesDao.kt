@@ -32,7 +32,7 @@ interface RecipesDao {
 
     @Transaction
     @Query("SELECT * FROM recipes_table WHERE recipeId=:recipeId")
-    fun getIngredientOfRecipe(recipeId: Int): Flow<RecipeWithExtendedIngredients>
+    fun getIngredientOfRecipe(recipeId: Long): Flow<RecipeWithExtendedIngredients>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
@@ -41,7 +41,7 @@ interface RecipesDao {
     suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
 
     @Query("SELECT EXISTS(SELECT * FROM favorite_recipes_table WHERE recipeId = :id)")
-    fun checkRecipeIsFavorite(id: Int):Flow<Boolean>
+    fun checkRecipeIsFavorite(id: Long):Flow<Boolean>
 
     @Query("SELECT * FROM recipes_table ORDER BY recipeId ASC")
     fun readRecipes(): PagingSource<Int, RecipesEntity>

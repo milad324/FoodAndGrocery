@@ -34,7 +34,7 @@ import com.shana.foodandgrocery.models.Recipe
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodRecipeView(recipe: Recipe, onRecipeClick: (Recipe) -> Unit) {
+fun FoodRecipeView(recipe: Recipe, onRecipeClick: (Long) -> Unit) {
 
     Card(
         modifier = Modifier
@@ -47,7 +47,7 @@ fun FoodRecipeView(recipe: Recipe, onRecipeClick: (Recipe) -> Unit) {
             containerColor = MaterialTheme.colorScheme.primary
         ),
         onClick = {
-            onRecipeClick(recipe)
+            onRecipeClick(recipe.recipeId)
         }
     ) {
         Row() {

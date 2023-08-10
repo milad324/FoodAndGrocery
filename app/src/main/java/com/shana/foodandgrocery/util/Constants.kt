@@ -38,6 +38,11 @@ class Constants {
         const val PREFERENCES_DIET_TYPE = "dietType"
 
 
+        const val START_DESTINATION = "startDestination"
+
+        const val RECIPE_ID_SAVED_STATE_KEY = "recipeId"
+
+
     }
 
 }
