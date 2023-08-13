@@ -26,8 +26,13 @@ class LocalDataSource @Inject constructor(
         return recipesDao.checkRecipeIsFavorite(id)
     }
 
-    fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity> {
+    fun readFavoriteRecipes(): Flow<List<Recipe>> {
         return recipesDao.readFavoriteRecipes()
+            .map { favoriteRecipeEntities ->
+                favoriteRecipeEntities.map {
+                    it.toRecipe()
+                }
+            }
     }
 
     suspend fun insertRecipes(recipesEntities: List<RecipesEntity>) {

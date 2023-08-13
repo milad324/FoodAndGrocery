@@ -27,7 +27,7 @@ fun HomeScreen(
     onRecipeClick: (Long) -> Unit,
     onSearchFilterClick: () -> Unit,
 ) {
-    Surface(modifier = Modifier.padding(8.dp)) {
+    Surface() {
         Box(modifier = Modifier.fillMaxSize()) {
             FoodRecipeListView(onRecipeClick = onRecipeClick)
             FloatingActionButton(

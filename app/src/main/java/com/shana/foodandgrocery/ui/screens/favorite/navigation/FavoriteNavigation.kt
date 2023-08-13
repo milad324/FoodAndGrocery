@@ -13,10 +13,10 @@ import com.shana.foodandgrocery.ui.screens.favorite.FavoriteScreen
 fun NavController.navigateFavorite(navOptions: NavOptions? = null) {
     this.navigate(Screen.FavoriteScreen.route, navOptions)
 }
-fun NavGraphBuilder.favoriteScreen() {
+fun NavGraphBuilder.favoriteScreen(onRecipeClick: (Long) -> Unit) {
     composable(
         route = Screen.FavoriteScreen.route
     ) {
-        FavoriteScreen()
+        FavoriteScreen(onRecipeClick = onRecipeClick)
     }
 }

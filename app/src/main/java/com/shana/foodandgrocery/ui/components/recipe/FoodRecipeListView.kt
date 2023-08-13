@@ -50,7 +50,7 @@ fun FoodRecipeListView(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 items(
                     count = recipes.itemCount,

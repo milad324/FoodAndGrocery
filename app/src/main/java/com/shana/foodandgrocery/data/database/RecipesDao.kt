@@ -28,7 +28,7 @@ interface RecipesDao {
     suspend fun insertExtendedIngredient(extendedIngredient: ExtendedIngredientEntity): Long
 
     @Upsert
-    suspend fun upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs: List<RecipeExtendedIngredientCrossRefEntity>)
+    suspend fun upsertRecipeExtendedIngredientCrossRefs(recipeExtendedIngredientCrossRefs: List<RecipeExtendedIngredientCrossRefEntity>)
 
     @Transaction
     @Query("SELECT * FROM recipes_table WHERE recipeId=:recipeId")
@@ -47,7 +47,7 @@ interface RecipesDao {
     fun readRecipes(): PagingSource<Int, RecipesEntity>
 
     @Query("SELECT * FROM favorite_recipes_table ORDER BY recipeId ASC")
-    fun readFavoriteRecipes(): PagingSource<Int, FavoriteRecipeEntity>
+    fun readFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>>
 
 
 

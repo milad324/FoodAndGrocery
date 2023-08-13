@@ -120,3 +120,30 @@ fun Recipe.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
         veryHealthy = veryHealthy
     )
 }
+
+fun FavoriteRecipeEntity.toRecipe(): Recipe {
+    return Recipe(aggregateLikes = aggregateLikes,
+        recipeId = recipeId,
+        image = image,
+        title = title,
+        cheap = cheap,
+        dairyFree = dairyFree,
+        glutenFree = glutenFree,
+        readyInMinutes = readyInMinutes,
+        sourceName = sourceName,
+        sourceUrl = sourceUrl,
+        summary = summary,
+        vegan = vegan,
+        vegetarian = vegetarian,
+        veryHealthy = veryHealthy,
+        extendedIngredients = extendedIngredientsEntity.map { extendedIngredientItem ->
+            ExtendedIngredient(
+                image = extendedIngredientItem.image,
+                name = extendedIngredientItem.name,
+                amount = extendedIngredientItem.amount,
+                unit = extendedIngredientItem.unit,
+                original = extendedIngredientItem.original,
+                consistency = extendedIngredientItem.consistency
+            )
+        })
+}

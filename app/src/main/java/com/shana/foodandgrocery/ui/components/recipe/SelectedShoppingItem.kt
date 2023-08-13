@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
@@ -57,11 +58,12 @@ fun selectedShoppingItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(80.dp)
         ) {
             SubcomposeAsyncImage(
                 model = Constants.BASE_IMAGE_URL + ingredient.image,
                 contentDescription = ingredient.name,
-                modifier = Modifier.width(80.dp),
+                modifier = Modifier.size(80.dp),
             ) {
                 val state = painter.state
                 if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
@@ -70,27 +72,25 @@ fun selectedShoppingItem(
                     SubcomposeAsyncImageContent()
                 }
             }
-            Column(
+            Text(
+                text = ingredient.original!!,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
+                    .weight(1f)
                     .height(80.dp)
-                    .padding(start = 16.dp),
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.Start
+                    .wrapContentHeight(align = Alignment.CenterVertically),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2
+            )
+            IconButton(
+                onClick = { handleRemove(ingredient) },
+                modifier = Modifier
             ) {
-                Text(text = ingredient.original!!, style = MaterialTheme.typography.titleLarge)
-
-            }
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                IconButton(
-                    onClick = { handleRemove(ingredient) },
-
-                    ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = stringResource(R.string.remove_ingredient),
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = stringResource(R.string.remove_ingredient),
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
 
 
@@ -101,7 +101,7 @@ fun selectedShoppingItem(
 
 @Preview
 @Composable
-fun TopAppView() {
+fun selectedShoppingItemView() {
     selectedShoppingItem(
         ingredient = ExtendedIngredient(
             name = "garlic",

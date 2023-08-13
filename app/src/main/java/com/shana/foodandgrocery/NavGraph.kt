@@ -28,7 +28,9 @@ fun NavGraph(
             showRecipeScreen()
         })
         searchScreen()
-        favoriteScreen()
+        favoriteScreen(onRecipeClick = {
+            navController.navigateShowRecipe(it)
+        })
         shoppingScreen()
         plannerScreen()
     }

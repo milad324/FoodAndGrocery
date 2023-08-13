@@ -21,7 +21,8 @@ class Constants {
         const val DATABASE_NAME = "recipes_database"
         const val RECIPES_TABLE = "recipes_table"
         const val EXTENDED_INGREDIENT_TABLE = "extended_ingredient_table"
-        const val RECIPES_EXTENDED_INGREDIENT_CROSS_REF_TABLE = "recipe_extended_ingredient_cross_ref_table"
+        const val RECIPES_EXTENDED_INGREDIENT_CROSS_REF_TABLE =
+            "recipe_extended_ingredient_cross_ref_table"
         const val FAVORITE_RECIPES_TABLE = "favorite_recipes_table"
         const val SHOPPING_LIST_TABLE = "shopping_list_table"
 
@@ -29,7 +30,6 @@ class Constants {
         const val DEFAULT_RECIPES_NUMBER = 50
         const val DEFAULT_MEAL_TYPE = "main course"
         const val DEFAULT_DIET_TYPE = "gluten free"
-
 
 
         const val PREFERENCES_NAME = "food_preferences"
@@ -41,6 +41,7 @@ class Constants {
         const val START_DESTINATION = "startDestination"
 
         const val RECIPE_ID_SAVED_STATE_KEY = "recipeId"
+        const val IS_FAVORITE_RECIPE_CLICK = "isFavorite"
 
 
     }
