@@ -4,6 +4,7 @@ import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.database.entitis.ShoppingItemEntity
 import com.shana.foodandgrocery.data.network.dto.newDto.ExtendedIngredientDto
 import com.shana.foodandgrocery.data.network.dto.newDto.RecipeDto
 import com.shana.foodandgrocery.models.ExtendedIngredient
@@ -31,7 +32,9 @@ fun RecipeWithExtendedIngredients.toRecipe(): Recipe {
                 amount = extendedIngredientItem.amount,
                 unit = extendedIngredientItem.unit,
                 original = extendedIngredientItem.original,
-                consistency = extendedIngredientItem.consistency
+                consistency = extendedIngredientItem.consistency,
+                aisle = extendedIngredientItem.aisle,
+                id = extendedIngredientItem.id
             )
         })
 }
@@ -108,7 +111,9 @@ fun Recipe.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
                 original = it.original,
                 consistency = it.consistency,
                 amount = it.amount,
-                name = it.name
+                name = it.name,
+                id = it.id,
+                aisle = it.aisle
             )
         },
         readyInMinutes = readyInMinutes,
@@ -143,7 +148,26 @@ fun FavoriteRecipeEntity.toRecipe(): Recipe {
                 amount = extendedIngredientItem.amount,
                 unit = extendedIngredientItem.unit,
                 original = extendedIngredientItem.original,
-                consistency = extendedIngredientItem.consistency
+                consistency = extendedIngredientItem.consistency,
+                aisle = extendedIngredientItem.aisle,
+                id = extendedIngredientItem.id
             )
         })
+}
+
+fun ExtendedIngredient.toShoppingList(recipe: Recipe): ShoppingItemEntity {
+    return ShoppingItemEntity(
+        recipeId = recipe.recipeId,
+        recipeName = recipe.title,
+        name = name,
+        amount = amount,
+        consistency = consistency,
+        image = image,
+        ingredientId = id,
+        aisle = aisle,
+        nameClean = name,
+        original = original,
+        originalName = original,
+        unit = unit
+    )
 }

@@ -7,9 +7,12 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.shana.foodandgrocery.data.Repository
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
+import com.shana.foodandgrocery.data.mappers.toShoppingList
 import com.shana.foodandgrocery.models.ExtendedIngredient
+import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.util.Constants.Companion.RECIPE_ID_SAVED_STATE_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,7 +38,7 @@ class FoodRecipeViewModel @Inject constructor(
     }
 
     fun handleFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO)  {
             if (isFavorite.value == true) {
                 repository.local.deleteFavoriteRecipe(favoriteRecipeEntity)
             } else {
@@ -44,4 +47,16 @@ class FoodRecipeViewModel @Inject constructor(
         }
     }
 
+    fun addToShopping() {
+        viewModelScope.launch(Dispatchers.IO) {
+            recipe.value?.let {
+                repository.local.upsertShoppingList(selectedIngredients.map { it.toShoppingList(recipe.value!!) })
+                selectedIngredients.removeRange(0, selectedIngredients.size)
+            }
+
+        }
+
+    }
 }
+
+

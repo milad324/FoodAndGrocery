@@ -53,7 +53,6 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             val selectedMealType = preferences[PreferenceKeys.selectedMealType] ?: DEFAULT_MEAL_TYPE
             val selectedDietType = preferences[PreferenceKeys.selectedDietType] ?: DEFAULT_DIET_TYPE
             val selectedQuery = preferences[PreferenceKeys.selectedQuery] ?: ""
-
             MealAndDietType(
                 selectedMealType,
                 selectedDietType,

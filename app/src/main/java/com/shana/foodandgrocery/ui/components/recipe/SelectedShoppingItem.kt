@@ -109,6 +109,8 @@ fun selectedShoppingItemView() {
             consistency = "SOLID",
             image = "garlic.png",
             original = "1 tablespoon Garlic",
-            unit = ""
+            unit = "",
+            id = 10L,
+            aisle = "alies"
         ), handleRemove = {})
 }

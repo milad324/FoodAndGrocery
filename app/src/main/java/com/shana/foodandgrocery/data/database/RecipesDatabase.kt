@@ -9,17 +9,17 @@ import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.database.entitis.ShoppingItemEntity
 import com.shana.foodandgrocery.util.Constants.Companion.DATABASE_NAME
 
 @Database(
-    entities = [RecipesEntity::class, FavoriteRecipeEntity::class, ExtendedIngredientEntity::class, RecipeExtendedIngredientCrossRefEntity::class],
+    entities = [RecipesEntity::class, FavoriteRecipeEntity::class, ExtendedIngredientEntity::class, RecipeExtendedIngredientCrossRefEntity::class, ShoppingItemEntity::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(ExtendedIngredientTypeConverter::class)
 abstract class RecipesDatabase : RoomDatabase() {
     abstract val dao: RecipesDao
-
     companion object {
         @Volatile
         var instance: RecipesDatabase? = null
@@ -33,8 +33,6 @@ abstract class RecipesDatabase : RoomDatabase() {
                     instance = it
                 }
             }
-
-
         }
     }
 }

@@ -13,6 +13,7 @@ import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.database.entitis.ShoppingItemEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,6 +31,15 @@ interface RecipesDao {
     @Upsert
     suspend fun upsertRecipeExtendedIngredientCrossRefs(recipeExtendedIngredientCrossRefs: List<RecipeExtendedIngredientCrossRefEntity>)
 
+    @Upsert
+    suspend fun upsertShoppingList(shoppingList: List<ShoppingItemEntity>)
+
+    @Query("SELECT * FROM shopping_list_table")
+    fun readShoppingList():Flow<List<ShoppingItemEntity>>
+
+    @Delete
+    suspend fun deleteShoppingItem(shoppingItemEntity:ShoppingItemEntity)
+
     @Transaction
     @Query("SELECT * FROM recipes_table WHERE recipeId=:recipeId")
     fun getIngredientOfRecipe(recipeId: Long): Flow<RecipeWithExtendedIngredients>
@@ -41,14 +51,13 @@ interface RecipesDao {
     suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity)
 
     @Query("SELECT EXISTS(SELECT * FROM favorite_recipes_table WHERE recipeId = :id)")
-    fun checkRecipeIsFavorite(id: Long):Flow<Boolean>
+    fun checkRecipeIsFavorite(id: Long): Flow<Boolean>
 
     @Query("SELECT * FROM recipes_table ORDER BY recipeId ASC")
     fun readRecipes(): PagingSource<Int, RecipesEntity>
 
     @Query("SELECT * FROM favorite_recipes_table ORDER BY recipeId ASC")
     fun readFavoriteRecipes(): Flow<List<FavoriteRecipeEntity>>
-
 
 
     @Query("DELETE FROM favorite_recipes_table")
@@ -70,7 +79,6 @@ interface RecipesDao {
 
     @Query("SELECT * FROM recipes_table WHERE recipeId=:id")
     fun getRecipeById(id: Int): Flow<RecipesEntity>
-
 
 
 }

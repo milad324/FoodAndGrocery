@@ -11,5 +11,7 @@ data class ExtendedIngredient(
     val image: String?,
     val name: String?,
     val original: String?,
-    val unit: String?
+    val unit: String?,
+    val id: Long,
+    val aisle: String?,
 ) : Parcelable

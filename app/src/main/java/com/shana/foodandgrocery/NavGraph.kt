@@ -6,6 +6,7 @@ import com.shana.foodandgrocery.config.Screen
 import com.shana.foodandgrocery.ui.screens.favorite.navigation.favoriteScreen
 import com.shana.foodandgrocery.ui.screens.home.navigation.homeScreen
 import com.shana.foodandgrocery.ui.screens.planner.navigation.plannerScreen
+import com.shana.foodandgrocery.ui.screens.search.navigation.navigateSearch
 import com.shana.foodandgrocery.ui.screens.search.navigation.searchScreen
 import com.shana.foodandgrocery.ui.screens.shopping.navigation.shoppingScreen
 import com.shana.foodandgrocery.ui.screens.showRecipe.navigation.navigateShowRecipe
@@ -26,6 +27,8 @@ fun NavGraph(
             navController.navigateShowRecipe(it)
         }, nestedGraphs = {
             showRecipeScreen()
+        }, onSearchFilterClick = {
+            navController.navigateSearch()
         })
         searchScreen()
         favoriteScreen(onRecipeClick = {

@@ -1,10 +1,14 @@
 package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Upsert
 import com.shana.foodandgrocery.data.database.RecipesDao
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
+import com.shana.foodandgrocery.data.database.entitis.ShoppingItemEntity
 import com.shana.foodandgrocery.data.mappers.toExtendedIngredientEntity
 import com.shana.foodandgrocery.data.mappers.toRecipe
 import com.shana.foodandgrocery.data.mappers.toRecipeEntity
@@ -20,6 +24,10 @@ class LocalDataSource @Inject constructor(
 
     fun readRecipes(): PagingSource<Int, RecipesEntity> {
         return recipesDao.readRecipes()
+    }
+
+   suspend fun deleteShoppingItem(shoppingItemEntity: ShoppingItemEntity) {
+        return recipesDao.deleteShoppingItem(shoppingItemEntity)
     }
 
     fun checkRecipeIsFavorite(id: Long): Flow<Boolean> {
@@ -92,5 +100,12 @@ class LocalDataSource @Inject constructor(
         return recipesDao.getRecipeCount()
     }
 
+    suspend fun upsertShoppingList(shoppingList: List<ShoppingItemEntity>) {
+        return recipesDao.upsertShoppingList(shoppingList)
+    }
+
+    fun readShoppingList(): Flow<List<ShoppingItemEntity>> {
+        return recipesDao.readShoppingList()
+    }
 
 }

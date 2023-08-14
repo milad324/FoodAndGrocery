@@ -17,7 +17,8 @@ fun NavController.navigateHome(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.homeScreen(
     onRecipeClick: (Long) -> Unit,
-    nestedGraphs: NavGraphBuilder.() -> Unit
+    nestedGraphs: NavGraphBuilder.() -> Unit,
+    onSearchFilterClick: () -> Unit
 ) {
     navigation(
         route = START_DESTINATION,
@@ -26,7 +27,7 @@ fun NavGraphBuilder.homeScreen(
         composable(
             route = Screen.MainScreen.route
         ) {
-            HomeScreen(onRecipeClick = onRecipeClick, onSearchFilterClick = {})
+            HomeScreen(onRecipeClick = onRecipeClick, onSearchFilterClick = onSearchFilterClick)
         }
         nestedGraphs()
     }
