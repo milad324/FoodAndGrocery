@@ -22,12 +22,15 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -38,12 +41,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.shana.foodandgrocery.R
+import com.shana.foodandgrocery.data.mappers.toFavoriteRecipeEntity
 import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
@@ -53,19 +58,50 @@ import kotlinx.coroutines.launch
 
 
 @SuppressLint("SuspiciousIndentation")
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
     var recipe = recipeViewModel.recipe.observeAsState().value
+    var isFavorite = recipeViewModel.isFavorite.observeAsState().value
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
-
     val scaffoldState = rememberBottomSheetScaffoldState()
     if (recipe != null)
-        Scaffold() { contentPadding ->
+        Scaffold(topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = recipe.title,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                actions = {
+                    androidx.compose.material3.IconButton(onClick = { recipeViewModel.handleFavoriteRecipe(recipe.toFavoriteRecipeEntity()) }) {
+                        if(isFavorite==true){
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_filled_star),
+                                contentDescription = "",
+                                tint = Color.Yellow
+
+                            )
+                        }else{
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_star_border_24),
+                                contentDescription = ""
+                            )
+                        }
+
+                    }
+                })
+        }) { contentPadding ->
             Column(Modifier.padding(contentPadding)) {
                 TabRow(
                     selectedTabIndex = (pagerState.currentPage),
@@ -99,11 +135,9 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                 HorizontalPager(state = pagerState, count = tabData.size) { page ->
                     when (page) {
                         0 -> {
-                            FoodRecipeOverview()
+                            FoodRecipeOverview(recipe = recipe)
                         }
-
                         1 -> {
-
                             BottomSheetScaffold(
                                 scaffoldState = scaffoldState,
                                 sheetPeekHeight = BottomSheetScaffoldDefaults.SheetPeekHeight,
@@ -185,9 +219,8 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                             }
 
                         }
-
                         2 -> {
-                            InstructionView()
+                            InstructionView(recipe)
                         }
                     }
 

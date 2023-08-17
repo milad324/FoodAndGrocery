@@ -28,9 +28,7 @@ import com.shana.foodandgrocery.viewModels.FoodRecipeViewModel
 
 
 @Composable
-fun InstructionView(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
-    var recipe = recipeViewModel.recipe.observeAsState().value
-    if(recipe!=null)
+fun InstructionView(recipe:Recipe) {
     Column(
         modifier = Modifier
             .fillMaxSize()

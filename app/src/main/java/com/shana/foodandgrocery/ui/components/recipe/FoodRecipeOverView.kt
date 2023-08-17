@@ -35,46 +35,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.shana.foodandgrocery.R
 import com.shana.foodandgrocery.data.mappers.toFavoriteRecipeEntity
+import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.viewModels.FoodRecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodRecipeOverview(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
-    var recipe = recipeViewModel.recipe.observeAsState().value
-    var isFavorite = recipeViewModel.isFavorite.observeAsState().value
-    recipe?.let {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = recipe.title,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
-                    IconButton(onClick = { recipeViewModel.handleFavoriteRecipe(recipe.toFavoriteRecipeEntity()) }) {
-                        if(isFavorite==true){
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_filled_star),
-                                contentDescription = "",
-                                tint = Color.Yellow
-
-                            )
-                        }else{
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_star_border_24),
-                                contentDescription = ""
-                            )
-                        }
-
-                    }
-                })
-        }) { contentPadding ->
+fun FoodRecipeOverview(recipe:Recipe) {
+        Scaffold() { contentPadding ->
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
@@ -149,7 +116,4 @@ fun FoodRecipeOverview(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                 )
             }
         }
-
-    }
-
 }
