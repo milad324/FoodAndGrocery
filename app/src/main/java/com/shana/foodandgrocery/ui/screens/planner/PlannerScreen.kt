@@ -70,17 +70,15 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDateTime
-import java.time.Month
 import java.time.YearMonth
-import java.time.format.TextStyle
 import java.util.Locale
 import androidx.compose.foundation.lazy.items
+import com.shana.foodandgrocery.util.TimeUtil.Companion.displayText
 import java.time.format.DateTimeFormatter
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 private val flights = generateFlights().groupBy { it.time.toLocalDate() }
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PlannerScreen() {
     val currentMonth = remember { YearMonth.now() }
@@ -97,7 +95,6 @@ fun PlannerScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.primary),
     ) {
         val state = rememberCalendarState(
             startMonth = startMonth,
@@ -116,7 +113,7 @@ fun PlannerScreen() {
         // Draw light content on dark background.
         CompositionLocalProvider(LocalContentColor provides darkColors().onSurface) {
             SimpleCalendarTitle(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .background(MaterialTheme.colors.primary)
                     .padding(horizontal = 8.dp, vertical = 12.dp),
                 currentMonth = visibleMonth.yearMonth,
@@ -132,10 +129,10 @@ fun PlannerScreen() {
                 },
             )
             HorizontalCalendar(
-                modifier = Modifier.wrapContentWidth(),
+                modifier = Modifier.wrapContentWidth().background(color = MaterialTheme.colors.primary),
                 state = state,
                 dayContent = { day ->
-                    CompositionLocalProvider(LocalRippleTheme provides Example3RippleTheme) {
+                    CompositionLocalProvider() {
                         val colors = if (day.position == DayPosition.MonthDate) {
                             flights[day.date].orEmpty().map { colorResource(it.color) }
                         } else {
@@ -167,7 +164,6 @@ fun PlannerScreen() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun Day(
     day: CalendarDay,
@@ -179,11 +175,11 @@ private fun Day(
         modifier = Modifier
             .aspectRatio(1f) // This is important for square-sizing!
             .border(
-                width = if (isSelected) 1.dp else 0.dp,
-                color = if (isSelected) MaterialTheme.colors.primary else Color.Transparent,
+                width = 1.dp,
+                color = if (isSelected) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primaryVariant,
             )
             .padding(1.dp)
-            .background(color = MaterialTheme.colors.onBackground)
+            .background(color = MaterialTheme.colors.primary)
             // Disable clicks on inDates/outDates
             .clickable(
                 enabled = day.position == DayPosition.MonthDate,
@@ -192,7 +188,7 @@ private fun Day(
     ) {
         val textColor = when (day.position) {
             DayPosition.MonthDate -> Color.Unspecified
-            DayPosition.InDate, DayPosition.OutDate -> MaterialTheme.colors.secondary
+            DayPosition.InDate, DayPosition.OutDate -> MaterialTheme.colors.onSecondary
         }
         Text(
             modifier = Modifier
@@ -221,7 +217,6 @@ private fun Day(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MonthHeader(
     modifier: Modifier = Modifier,
@@ -233,7 +228,7 @@ private fun MonthHeader(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = Color.White,
+                color = MaterialTheme.colors.onPrimary,
                 text = dayOfWeek.displayText(uppercase = true),
                 fontWeight = FontWeight.Light,
             )
@@ -241,7 +236,6 @@ private fun MonthHeader(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun LazyItemScope.FlightInformation(flight: Flight) {
     Row(
@@ -284,7 +278,6 @@ private fun LazyItemScope.FlightInformation(flight: Flight) {
     Divider(color = MaterialTheme.colors.primary, thickness = 2.dp)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 val flightDateTimeFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'HH:mm")
 
@@ -335,24 +328,14 @@ private fun AirportInformation(airport: Airport, isDeparture: Boolean) {
     }
 }
 
-// The default dark them ripple is too bright so we tone it down.
-private object Example3RippleTheme : RippleTheme {
-    @Composable
-    override fun defaultColor() = RippleTheme.defaultRippleColor(Color.Gray, lightTheme = false)
 
-    @Composable
-    override fun rippleAlpha() = RippleTheme.defaultRippleAlpha(Color.Gray, lightTheme = false)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(heightDp = 600)
+@Preview()
 @Composable
 private fun Example3Preview() {
     PlannerScreen()
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun generateFlights(): List<Flight> = buildList {
     val currentMonth = YearMonth.now()
 
@@ -489,7 +472,6 @@ private val CalendarLayoutInfo.completelyVisibleMonths: List<CalendarMonth>
     }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SimpleCalendarTitle(
     modifier: Modifier,
@@ -542,21 +524,4 @@ private fun CalendarNavigationIcon(
         painter = icon,
         contentDescription = contentDescription,
     )
-}
-@RequiresApi(Build.VERSION_CODES.O)
-fun YearMonth.displayText(short: Boolean = false): String {
-    return "${this.month.displayText(short = short)} ${this.year}"
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun Month.displayText(short: Boolean = true): String {
-    val style = if (short) TextStyle.SHORT else TextStyle.FULL
-    return getDisplayName(style, Locale.ENGLISH)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun DayOfWeek.displayText(uppercase: Boolean = false): String {
-    return getDisplayName(TextStyle.SHORT, Locale.ENGLISH).let { value ->
-        if (uppercase) value.uppercase(Locale.ENGLISH) else value
-    }
 }

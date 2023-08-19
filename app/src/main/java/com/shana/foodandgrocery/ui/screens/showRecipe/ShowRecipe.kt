@@ -17,9 +17,14 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +42,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +69,7 @@ import kotlinx.coroutines.launch
 fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
     var recipe = recipeViewModel.recipe.observeAsState().value
     var isFavorite = recipeViewModel.isFavorite.observeAsState().value
+    var showMenu by remember { mutableStateOf(false) }
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
@@ -84,21 +91,41 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                     actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 actions = {
-                    androidx.compose.material3.IconButton(onClick = { recipeViewModel.handleFavoriteRecipe(recipe.toFavoriteRecipeEntity()) }) {
-                        if(isFavorite==true){
+                    androidx.compose.material3.IconButton(onClick = {
+                        recipeViewModel.handleFavoriteRecipe(
+                            recipe.toFavoriteRecipeEntity()
+                        )
+                    }) {
+                        if (isFavorite == true) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_filled_star),
                                 contentDescription = "",
                                 tint = Color.Yellow
 
                             )
-                        }else{
+                        } else {
                             Icon(
                                 painter = painterResource(id = R.drawable.baseline_star_border_24),
                                 contentDescription = ""
                             )
                         }
 
+                    }
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        Icon(Icons.Default.MoreVert, "")
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(onClick = {
+                            if (isFavorite == true) {
+                            } else {
+
+                            }
+                        }) {
+                            Text(text = "addToPlaner", color = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 })
         }) { contentPadding ->
@@ -137,6 +164,7 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                         0 -> {
                             FoodRecipeOverview(recipe = recipe)
                         }
+
                         1 -> {
                             BottomSheetScaffold(
                                 scaffoldState = scaffoldState,
@@ -219,6 +247,7 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                             }
 
                         }
+
                         2 -> {
                             InstructionView(recipe)
                         }
