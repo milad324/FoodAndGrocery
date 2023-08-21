@@ -10,6 +10,7 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
+import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeWithExtendedIngredients
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
@@ -18,6 +19,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipesDao {
+
+    @Insert
+    suspend fun insertPlanner(planner: PlannerEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipesEntity: RecipesEntity)

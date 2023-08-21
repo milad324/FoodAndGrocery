@@ -7,7 +7,7 @@ import com.shana.foodandgrocery.util.Constants.Companion.FAVORITE_RECIPES_TABLE
 import kotlinx.parcelize.RawValue
 
 @Entity(tableName = FAVORITE_RECIPES_TABLE)
-class FavoriteRecipeEntity(
+data class FavoriteRecipeEntity(
     val aggregateLikes: Long,
     val cheap: Boolean,
     val dairyFree: Boolean,

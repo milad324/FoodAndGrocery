@@ -25,6 +25,7 @@ class Constants {
             "recipe_extended_ingredient_cross_ref_table"
         const val FAVORITE_RECIPES_TABLE = "favorite_recipes_table"
         const val SHOPPING_LIST_TABLE = "shopping_list_table"
+        const val PLANNER_TABLE = "planner_table"
 
         // Bottom Sheet and Preferences
         const val DEFAULT_RECIPES_NUMBER = 50

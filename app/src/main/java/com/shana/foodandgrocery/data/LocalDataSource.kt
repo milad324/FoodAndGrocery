@@ -2,10 +2,12 @@ package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import com.shana.foodandgrocery.data.database.RecipesDao
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
+import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipesEntity
 import com.shana.foodandgrocery.data.database.entitis.ShoppingItemEntity
@@ -22,11 +24,15 @@ class LocalDataSource @Inject constructor(
     val recipesDao: RecipesDao
 ) {
 
+    suspend fun insertPlanner(planner: PlannerEntity) {
+        return recipesDao.insertPlanner(planner)
+    }
+
     fun readRecipes(): PagingSource<Int, RecipesEntity> {
         return recipesDao.readRecipes()
     }
 
-   suspend fun deleteShoppingItem(shoppingItemEntity: ShoppingItemEntity) {
+    suspend fun deleteShoppingItem(shoppingItemEntity: ShoppingItemEntity) {
         return recipesDao.deleteShoppingItem(shoppingItemEntity)
     }
 
