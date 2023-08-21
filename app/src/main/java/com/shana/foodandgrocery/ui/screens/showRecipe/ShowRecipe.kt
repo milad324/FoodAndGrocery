@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldDefaults
@@ -24,11 +22,9 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
@@ -42,7 +38,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.ModifierLocalReadScope
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,8 +48,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.R
 import com.shana.foodandgrocery.data.mappers.toFavoriteRecipeEntity
+import com.shana.foodandgrocery.ui.components.recipe.AddToPlanner
 import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
@@ -66,81 +63,96 @@ import kotlinx.coroutines.launch
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
+fun ShowRecipe(
+    recipeViewModel: FoodRecipeViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+    appStat: FoodAndGroceryState
+) {
     var recipe = recipeViewModel.recipe.observeAsState().value
     var isFavorite = recipeViewModel.isFavorite.observeAsState().value
     var showMenu by remember { mutableStateOf(false) }
+
+
     val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
     val scaffoldState = rememberBottomSheetScaffoldState()
-    if (recipe != null)
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = recipe.title,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onPrimary
+    val scaffoldPlannerState = rememberBottomSheetScaffoldState()
+    BottomSheetScaffold(
+        scaffoldState = scaffoldPlannerState,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+            recipe?.let {
+                AddToPlanner(recipe)
+            }
+        }) { innerPadding ->
+        if (recipe != null) Scaffold(Modifier.padding(innerPadding), topBar = {
+            TopAppBar(title = {
+                Text(
+                    text = recipe.title,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }, colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+            ), actions = {
+                androidx.compose.material3.IconButton(onClick = {
+                    recipeViewModel.handleFavoriteRecipe(
+                        recipe.toFavoriteRecipeEntity()
                     )
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
-                    androidx.compose.material3.IconButton(onClick = {
-                        recipeViewModel.handleFavoriteRecipe(
-                            recipe.toFavoriteRecipeEntity()
+                }) {
+                    if (isFavorite == true) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_filled_star),
+                            contentDescription = "",
+                            tint = Color.Yellow
+
                         )
-                    }) {
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_star_border_24),
+                            contentDescription = ""
+                        )
+                    }
+
+                }
+                IconButton(onClick = { showMenu = !showMenu }) {
+                    Icon(Icons.Default.MoreVert, "")
+                }
+                DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                    DropdownMenuItem(onClick = {
                         if (isFavorite == true) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_filled_star),
-                                contentDescription = "",
-                                tint = Color.Yellow
-
-                            )
-                        } else {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_star_border_24),
-                                contentDescription = ""
-                            )
-                        }
-
-                    }
-                    IconButton(onClick = { showMenu = !showMenu }) {
-                        Icon(Icons.Default.MoreVert, "")
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        DropdownMenuItem(onClick = {
-                            if (isFavorite == true) {
-                            } else {
-
+                            appStat.coroutineScope.launch {
+                                scaffoldPlannerState.bottomSheetState.expand()
                             }
-                        }) {
-                            Text(text = "addToPlaner", color = MaterialTheme.colorScheme.primary)
+                        } else {
+                            appStat.coroutineScope.launch {
+                                onShowSnackbar("Add this Food To Favorite First", null)
+                            }
                         }
+                    }) {
+                        Text(
+                            text = "addToPlaner", color = MaterialTheme.colorScheme.primary
+                        )
                     }
-                })
+                }
+            })
         }) { contentPadding ->
             Column(Modifier.padding(contentPadding)) {
                 TabRow(
                     selectedTabIndex = (pagerState.currentPage),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(30.dp), containerColor = MaterialTheme.colorScheme.primary,
+                        .height(30.dp),
+                    containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
                     tabData.forEachIndexed { index, data ->
                         val selected = pagerState.currentPage == index
-                        Tab(
-                            selected = selected,
+                        Tab(selected = selected,
                             onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                             modifier = Modifier,
                             enabled = true,
@@ -155,8 +167,7 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                         FontWeight.Normal
                                     }
                                 )
-                            }
-                        )
+                            })
                     }
                 }
                 HorizontalPager(state = pagerState, count = tabData.size) { page ->
@@ -166,8 +177,7 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                         }
 
                         1 -> {
-                            BottomSheetScaffold(
-                                scaffoldState = scaffoldState,
+                            BottomSheetScaffold(scaffoldState = scaffoldState,
                                 sheetPeekHeight = BottomSheetScaffoldDefaults.SheetPeekHeight,
                                 sheetContent = {
                                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -193,7 +203,9 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                                     Row() {
                                                         Icon(
                                                             painter = painterResource(id = R.drawable.ic_add_shopping),
-                                                            contentDescription = stringResource(R.string.search)
+                                                            contentDescription = stringResource(
+                                                                R.string.search
+                                                            )
                                                         )
                                                         Text(
                                                             text = "Add To Shopping List",
@@ -213,14 +225,12 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                         LazyColumn() {
                                             recipeViewModel.selectedIngredients.forEach { item ->
                                                 item {
-                                                    selectedShoppingItem(
-                                                        ingredient = item,
+                                                    selectedShoppingItem(ingredient = item,
                                                         handleRemove = {
                                                             recipeViewModel.handleRemoveIngredient(
                                                                 it
                                                             )
-                                                        }
-                                                    )
+                                                        })
                                                 }
                                             }
                                         }
@@ -231,13 +241,14 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                     LazyColumn() {
                                         recipe.extendedIngredients.forEach { item ->
                                             item {
-                                                IngredientItemView(
-                                                    ingredient = item,
+                                                IngredientItemView(ingredient = item,
                                                     recipeViewModel.selectedIngredients.contains(
                                                         item
                                                     ),
                                                     handleSelect = {
-                                                        recipeViewModel.handleSelectIngredient(it)
+                                                        recipeViewModel.handleSelectIngredient(
+                                                            it
+                                                        )
                                                     })
                                             }
                                         }
@@ -245,7 +256,6 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                                 }
 
                             }
-
                         }
 
                         2 -> {
@@ -256,6 +266,7 @@ fun ShowRecipe(recipeViewModel: FoodRecipeViewModel = hiltViewModel()) {
                 }
             }
         }
+    }
 
 
 }

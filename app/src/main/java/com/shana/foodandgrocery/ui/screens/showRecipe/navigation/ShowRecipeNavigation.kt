@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.ui.screens.showRecipe.ShowRecipe
 import com.shana.foodandgrocery.util.Constants.Companion.RECIPE_ID_SAVED_STATE_KEY
 
@@ -13,7 +14,11 @@ fun NavController.navigateShowRecipe(recipeId: Long) {
         launchSingleTop = true
     }
 }
-fun NavGraphBuilder.showRecipeScreen() {
+
+fun NavGraphBuilder.showRecipeScreen(
+    appState:FoodAndGroceryState,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
+) {
     composable(
         route = "showRecipe/{$RECIPE_ID_SAVED_STATE_KEY}",
         arguments = listOf(
@@ -23,6 +28,6 @@ fun NavGraphBuilder.showRecipeScreen() {
             }
         )
     ) {
-        ShowRecipe()
+        ShowRecipe(onShowSnackbar = onShowSnackbar, appStat = appState)
     }
 }

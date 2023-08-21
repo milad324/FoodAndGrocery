@@ -2,7 +2,6 @@ package com.shana.foodandgrocery
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
-import com.shana.foodandgrocery.config.Screen
 import com.shana.foodandgrocery.ui.screens.favorite.navigation.favoriteScreen
 import com.shana.foodandgrocery.ui.screens.home.navigation.homeScreen
 import com.shana.foodandgrocery.ui.screens.planner.navigation.plannerScreen
@@ -26,7 +25,7 @@ fun NavGraph(
         homeScreen(onRecipeClick = {
             navController.navigateShowRecipe(it)
         }, nestedGraphs = {
-            showRecipeScreen()
+            showRecipeScreen(onShowSnackbar = onShowSnackbar, appState = appState)
         }, onSearchFilterClick = {
             navController.navigateSearch()
         })

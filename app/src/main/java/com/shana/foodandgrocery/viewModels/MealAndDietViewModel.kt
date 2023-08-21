@@ -27,8 +27,6 @@ class MealAndDietViewModel @Inject constructor(private var dataStoreRepository: 
             query.value =it.selectedQuery
         }
     }
-
-
     fun saveMealAndDietType() {
         viewModelScope.launch {
             dataStoreRepository.saveMealAndDietType(
@@ -38,7 +36,6 @@ class MealAndDietViewModel @Inject constructor(private var dataStoreRepository: 
             )
         }
     }
-
     val mealTypeChips = listOf(
         "main course",
         "side dish",
