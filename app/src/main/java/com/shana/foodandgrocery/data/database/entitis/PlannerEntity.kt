@@ -6,11 +6,12 @@ import com.shana.foodandgrocery.util.Constants.Companion.PLANNER_TABLE
 
 
 @Entity(tableName = PLANNER_TABLE)
-data class PlannerEntity (
+data class PlannerEntity(
     @PrimaryKey(autoGenerate = true)
-    val id:Long,
-    var recipeName:String,
-    var recipeId:Long,
+    val id: Long,
+    var recipeName: String,
+    var recipeId: Long,
     var mealType: String,
-    var cookDate:Long
+    var cookDate: Long,
+    var img: String
 )

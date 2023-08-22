@@ -20,23 +20,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shana.foodandgrocery.R
-import com.shana.foodandgrocery.models.Recipe
+import com.shana.foodandgrocery.ui.screens.showRecipe.ShowRecipeViewModel
 import com.shana.foodandgrocery.util.TimeUtil.Companion.toMillis
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun AddToPlanner(recipe: Recipe) {
+fun AddToPlanner(
+    recipeViewModel: ShowRecipeViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean
+) {
+    val scope = rememberCoroutineScope()
     val dateTime = LocalDateTime.now()
-    val mealType =
-        arrayOf("breakfast", "brunch", "elevenses", "lunch", "tea", "supper", "dinner")
+    var mealType = recipeViewModel.mealType
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(mealType[0]) }
+    var selectedMealType by remember { mutableStateOf(mealType[0]) }
     var datePickState = remember {
         DatePickerState(
             yearRange = (2023..2024),
@@ -46,7 +52,6 @@ fun AddToPlanner(recipe: Recipe) {
         )
     }
     Column(modifier = Modifier.fillMaxWidth()) {
-
         DatePicker(state = datePickState, title = null)
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -61,7 +66,7 @@ fun AddToPlanner(recipe: Recipe) {
                     .padding(start = 24.dp, end = 24.dp),
 
                 readOnly = true,
-                value = selectedText,
+                value = selectedMealType,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.meal)) },
                 trailingIcon = {
@@ -80,7 +85,7 @@ fun AddToPlanner(recipe: Recipe) {
                 mealType.forEach { selectionOption ->
                     DropdownMenuItem(
                         onClick = {
-                            selectedText = selectionOption
+                            selectedMealType = selectionOption
                             expanded = false
                         }
                     ) {
@@ -90,7 +95,18 @@ fun AddToPlanner(recipe: Recipe) {
             }
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                scope.launch {
+                    datePickState.selectedDateMillis?.let {
+                        recipeViewModel.addToPlanner(
+                            cookDate = it,
+                            mealType = selectedMealType
+                        )
+                        expanded = false
+                        onShowSnackbar("added tp planner successFuly", null)
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)

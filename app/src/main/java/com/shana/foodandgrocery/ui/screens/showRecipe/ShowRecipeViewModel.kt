@@ -1,4 +1,4 @@
-package com.shana.foodandgrocery.viewModels
+package com.shana.foodandgrocery.ui.screens.showRecipe
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
@@ -7,9 +7,9 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.shana.foodandgrocery.data.Repository
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
+import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.data.mappers.toShoppingList
 import com.shana.foodandgrocery.models.ExtendedIngredient
-import com.shana.foodandgrocery.models.Recipe
 import com.shana.foodandgrocery.util.Constants.Companion.RECIPE_ID_SAVED_STATE_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +18,12 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class FoodRecipeViewModel @Inject constructor(
+class ShowRecipeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle, private val repository: Repository
 ) : ViewModel() {
+    val mealType =
+        arrayOf("breakfast", "brunch", "elevenses", "lunch", "tea", "supper", "dinner")
+    val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
     private var recipeId: Long? = savedStateHandle[RECIPE_ID_SAVED_STATE_KEY]
     var recipe = repository.local.getRecipeById(recipeId ?: 1L).asLiveData()
     var isFavorite = repository.local.checkRecipeIsFavorite(recipeId ?: 1).asLiveData()
@@ -56,6 +59,16 @@ class FoodRecipeViewModel @Inject constructor(
 
         }
 
+    }
+
+
+    fun addToPlanner(cookDate:Long,mealType:String){
+        viewModelScope.launch {
+            recipe.value?.let {
+                repository.local.insertPlanner(PlannerEntity(id=0, recipeName = recipe.value!!.title, recipeId = recipe.value!!.recipeId, mealType = mealType, cookDate = cookDate, img = recipe.value!!.image))
+            }
+
+        }
     }
 }
 

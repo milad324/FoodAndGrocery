@@ -56,7 +56,6 @@ import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
 import com.shana.foodandgrocery.ui.components.recipe.selectedShoppingItem
-import com.shana.foodandgrocery.viewModels.FoodRecipeViewModel
 import kotlinx.coroutines.launch
 
 
@@ -64,17 +63,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowRecipe(
-    recipeViewModel: FoodRecipeViewModel = hiltViewModel(),
+    recipeViewModel: ShowRecipeViewModel = hiltViewModel(),
     onShowSnackbar: suspend (String, String?) -> Boolean,
     appStat: FoodAndGroceryState
 ) {
     var recipe = recipeViewModel.recipe.observeAsState().value
     var isFavorite = recipeViewModel.isFavorite.observeAsState().value
     var showMenu by remember { mutableStateOf(false) }
-
-
-    val tabData = listOf("OVERVIEW", "INGREDIENTS", "INSTRUCTIONS")
-    val scope = rememberCoroutineScope()
+    val tabData = recipeViewModel.tabData
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
@@ -85,7 +81,7 @@ fun ShowRecipe(
         sheetPeekHeight = 0.dp,
         sheetContent = {
             recipe?.let {
-                AddToPlanner(recipe)
+                AddToPlanner(onShowSnackbar = onShowSnackbar)
             }
         }) { innerPadding ->
         if (recipe != null) Scaffold(Modifier.padding(innerPadding), topBar = {
@@ -153,7 +149,7 @@ fun ShowRecipe(
                     tabData.forEachIndexed { index, data ->
                         val selected = pagerState.currentPage == index
                         Tab(selected = selected,
-                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                            onClick = { appStat.coroutineScope.launch { pagerState.animateScrollToPage(index) } },
                             modifier = Modifier,
                             enabled = true,
                             interactionSource = MutableInteractionSource(),
