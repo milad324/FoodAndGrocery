@@ -23,6 +23,9 @@ interface RecipesDao {
     @Insert
     suspend fun insertPlanner(planner: PlannerEntity)
 
+    @Query("SELECT * FROM PLANNER_TABLE")
+    fun readPlanner():Flow<List<PlannerEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipesEntity: RecipesEntity)
 

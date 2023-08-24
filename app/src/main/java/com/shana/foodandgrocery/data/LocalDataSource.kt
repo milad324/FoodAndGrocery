@@ -28,6 +28,10 @@ class LocalDataSource @Inject constructor(
         return recipesDao.insertPlanner(planner)
     }
 
+    fun readPlanner():Flow<List<PlannerEntity>>{
+        return recipesDao.readPlanner()
+    }
+
     fun readRecipes(): PagingSource<Int, RecipesEntity> {
         return recipesDao.readRecipes()
     }

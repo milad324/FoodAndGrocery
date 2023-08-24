@@ -73,14 +73,21 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 import java.util.Locale
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.util.TimeUtil.Companion.displayText
+import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 
 
-private val flights = generateFlights().groupBy { it.time.toLocalDate() }
 @Composable
-fun PlannerScreen() {
+fun PlannerScreen(plannerViewModel: PlannerViewModel = hiltViewModel()) {
+    val plannerList =
+        plannerViewModel.plannerList.observeAsState().value?.groupBy { item -> LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(item.cookDate),TimeZone.getDefault().toZoneId()).toLocalDate()  }
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
@@ -89,7 +96,7 @@ fun PlannerScreen() {
     val flightsInSelectedDate = remember {
         derivedStateOf {
             val date = selection?.date
-            if (date == null) emptyList() else flights[date].orEmpty()
+            if (date == null) emptyList() else plannerList?.get(date)?.orEmpty()
         }
     }
     Column(
@@ -129,14 +136,16 @@ fun PlannerScreen() {
                 },
             )
             HorizontalCalendar(
-                modifier = Modifier.wrapContentWidth().background(color = MaterialTheme.colors.primary),
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .background(color = MaterialTheme.colors.primary),
                 state = state,
                 dayContent = { day ->
                     CompositionLocalProvider() {
                         val colors = if (day.position == DayPosition.MonthDate) {
-                            flights[day.date].orEmpty().map { colorResource(it.color) }
+                            plannerList?.get(day.date)?.map { Color.Red }.orEmpty()
                         } else {
-                            emptyList()
+                            emptyList<Color>()
                         }
                         Day(
                             day = day,
@@ -156,7 +165,7 @@ fun PlannerScreen() {
             )
             Divider(color = MaterialTheme.colors.primary)
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(items = flightsInSelectedDate.value) { flight ->
+                items(items = flightsInSelectedDate.value.orEmpty()) { flight ->
                     FlightInformation(flight)
                 }
             }
@@ -237,208 +246,17 @@ private fun MonthHeader(
 }
 
 @Composable
-private fun LazyItemScope.FlightInformation(flight: Flight) {
+private fun LazyItemScope.FlightInformation(flight: PlannerEntity) {
     Row(
-        modifier = Modifier
-            .fillParentMaxWidth()
-            .height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Box(
-            modifier = Modifier
-                .background(color = colorResource(flight.color))
-                .fillParentMaxWidth(1 / 7f)
-                .aspectRatio(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = flightDateTimeFormatter.format(flight.time).uppercase(Locale.ENGLISH),
-                textAlign = TextAlign.Center,
-                lineHeight = 17.sp,
-                fontSize = 12.sp,
-            )
-        }
-        Box(
-            modifier = Modifier
-                .background(color = MaterialTheme.colors.primary)
-                .weight(1f)
-                .fillMaxHeight(),
-        ) {
-            AirportInformation(flight.departure, isDeparture = true)
-        }
-        Box(
-            modifier = Modifier
-                .background(color = MaterialTheme.colors.onBackground)
-                .weight(1f)
-                .fillMaxHeight(),
-        ) {
-            AirportInformation(flight.destination, isDeparture = false)
-        }
+        Text(text = flight.recipeName, color = Color.Red)
+
     }
     Divider(color = MaterialTheme.colors.primary, thickness = 2.dp)
 }
 
-val flightDateTimeFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("EEE'\n'dd MMM'\n'HH:mm")
 
-
-@Composable
-private fun AirportInformation(airport: Airport, isDeparture: Boolean) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-    ) {
-        val resource = if (isDeparture) {
-            R.drawable.ic_airplane_takeoff
-        } else {
-            R.drawable.ic_airplane_landing
-        }
-        Box(
-            modifier = Modifier
-                .weight(0.3f)
-                .fillMaxHeight()
-                .fillMaxHeight(),
-            contentAlignment = Alignment.CenterEnd,
-        ) {
-            Image(painter = painterResource(resource), contentDescription = null)
-        }
-        Column(
-            modifier = Modifier
-                .weight(0.7f)
-                .fillMaxHeight()
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = airport.code,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Black,
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = airport.city,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-            )
-        }
-    }
-}
-
-
-@Preview()
-@Composable
-private fun Example3Preview() {
-    PlannerScreen()
-}
-
-
-fun generateFlights(): List<Flight> = buildList {
-    val currentMonth = YearMonth.now()
-
-    currentMonth.atDay(17).also { date ->
-        add(
-            Flight(
-                date.atTime(14, 0),
-                Airport("Lagos", "LOS"),
-                Airport("Abuja", "ABV"),
-                R.color.teal_700,
-            ),
-        )
-        add(
-            Flight(
-                date.atTime(21, 30),
-                Airport("Enugu", "ENU"),
-                Airport("Owerri", "QOW"),
-                R.color.teal_700,
-            ),
-        )
-    }
-
-    currentMonth.atDay(22).also { date ->
-        add(
-            Flight(
-                date.atTime(13, 20),
-                Airport("Ibadan", "IBA"),
-                Airport("Benin", "BNI"),
-                R.color.teal_700,
-            ),
-        )
-        add(
-            Flight(
-                date.atTime(17, 40),
-                Airport("Sokoto", "SKO"),
-                Airport("Ilorin", "ILR"),
-                R.color.teal_700,
-            ),
-        )
-    }
-
-    currentMonth.atDay(3).also { date ->
-        add(
-            Flight(
-                date.atTime(20, 0),
-                Airport("Makurdi", "MDI"),
-                Airport("Calabar", "CBQ"),
-                R.color.teal_700,
-            ),
-        )
-    }
-
-    currentMonth.atDay(12).also { date ->
-        add(
-            Flight(
-                date.atTime(18, 15),
-                Airport("Kaduna", "KAD"),
-                Airport("Jos", "JOS"),
-                R.color.teal_700,
-            ),
-        )
-    }
-
-    currentMonth.plusMonths(1).atDay(13).also { date ->
-        add(
-            Flight(
-                date.atTime(7, 30),
-                Airport("Kano", "KAN"),
-                Airport("Akure", "AKR"),
-                R.color.teal_700,
-            ),
-        )
-        add(
-            Flight(
-                date.atTime(10, 50),
-                Airport("Minna", "MXJ"),
-                Airport("Zaria", "ZAR"),
-                R.color.teal_700,
-            ),
-        )
-    }
-
-    currentMonth.minusMonths(1).atDay(9).also { date ->
-        add(
-            Flight(
-                date.atTime(20, 15),
-                Airport("Asaba", "ABB"),
-                Airport("Port Harcourt", "PHC"),
-                R.color.teal_700,
-            ),
-        )
-    }
-}
-
-private typealias Airport = Flight.Airport
-data class Flight(
-    val time: LocalDateTime,
-    val departure: Airport,
-    val destination: Airport,
-    @ColorRes val color: Int,
-) {
-    data class Airport(val city: String, val code: String)
-}
 
 @Composable
 fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
@@ -452,6 +270,7 @@ fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
     }
     return visibleMonth.value
 }
+
 private val CalendarLayoutInfo.completelyVisibleMonths: List<CalendarMonth>
     get() {
         val visibleItemsInfo = this.visibleMonthsInfo.toMutableList()
@@ -504,6 +323,7 @@ fun SimpleCalendarTitle(
         )
     }
 }
+
 @Composable
 private fun CalendarNavigationIcon(
     icon: Painter,
