@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeView
+import com.shana.foodandgrocery.ui.screens.home.FoodRecipeItemView
 
 @Composable
 fun FavoriteScreen(
@@ -24,7 +24,7 @@ fun FavoriteScreen(
                 count = it.size,
             ) { index ->
                 val recipe = it[index]
-                FoodRecipeView(
+                FoodRecipeItemView(
                     recipe = recipe,
                     onRecipeClick = { onRecipeClick(recipe.recipeId) },
                     true

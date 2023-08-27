@@ -18,12 +18,19 @@ import androidx.compose.material.BottomSheetScaffoldDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,12 +58,13 @@ import com.google.accompanist.pager.rememberPagerState
 import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.R
 import com.shana.foodandgrocery.data.mappers.toFavoriteRecipeEntity
-import com.shana.foodandgrocery.ui.components.recipe.AddToPlanner
 import com.shana.foodandgrocery.ui.components.recipe.InstructionView
 import com.shana.foodandgrocery.ui.components.recipe.FoodRecipeOverview
 import com.shana.foodandgrocery.ui.components.recipe.IngredientItemView
 import com.shana.foodandgrocery.ui.components.recipe.selectedShoppingItem
+import com.shana.foodandgrocery.util.TimeUtil.Companion.toMillis
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -267,5 +275,90 @@ fun ShowRecipe(
 
 }
 
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@Composable
+fun AddToPlanner(
+    recipeViewModel: ShowRecipeViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean
+) {
+    val scope = rememberCoroutineScope()
+    val dateTime = LocalDateTime.now()
+    var mealType = recipeViewModel.mealType
+    var expanded by remember { mutableStateOf(false) }
+    var selectedMealType by remember { mutableStateOf(mealType[0]) }
+    var datePickState = remember {
+        DatePickerState(
+            yearRange = (2023..2024),
+            initialSelectedDateMillis = dateTime.toMillis(),
+            initialDisplayMode = DisplayMode.Input,
+            initialDisplayedMonthMillis = null
+        )
+    }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        DatePicker(state = datePickState, title = null)
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            },
+
+            ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp),
+
+                readOnly = true,
+                value = selectedMealType,
+                onValueChange = { },
+                label = { Text(stringResource(R.string.meal)) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = MaterialTheme.colorScheme.background),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                mealType.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedMealType = selectionOption
+                            expanded = false
+                        }
+                    ) {
+                        Text(text = selectionOption)
+                    }
+                }
+            }
+        }
+        Button(
+            onClick = {
+                scope.launch {
+                    datePickState.selectedDateMillis?.let {
+                        recipeViewModel.addToPlanner(
+                            cookDate = it,
+                            mealType = selectedMealType
+                        )
+                        expanded = false
+                        onShowSnackbar("added tp planner successFuly", null)
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            Text(text = stringResource(R.string.add_to_planner))
+        }
+    }
+}
 
 
