@@ -166,7 +166,9 @@ fun PlannerScreen(plannerViewModel: PlannerViewModel = hiltViewModel()) {
             Divider(color = MaterialTheme.colors.primary)
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(items = plannersInSelectedDate.value.orEmpty()) { flight ->
-                    PlannerInformation(flight)
+                    PlannerInformation(flight, deletePlanner = {
+                        plannerViewModel.deletePlanner(it)
+                    })
                 }
             }
         }
@@ -246,7 +248,10 @@ private fun MonthHeader(
 }
 
 @Composable
-private fun LazyItemScope.PlannerInformation(plannerItem: PlannerEntity) {
+private fun LazyItemScope.PlannerInformation(
+    plannerItem: PlannerEntity,
+    deletePlanner: (Long) -> Unit
+) {
 
     Card(
         modifier = Modifier
@@ -284,7 +289,7 @@ private fun LazyItemScope.PlannerInformation(plannerItem: PlannerEntity) {
                 modifier = Modifier
                     .align(Alignment.CenterVertically),
                 onClick = {
-
+                    deletePlanner(plannerItem.id)
                 },
                 colors = IconButtonDefaults.filledIconButtonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.error)
             ) {

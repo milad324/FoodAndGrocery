@@ -28,6 +28,9 @@ class LocalDataSource @Inject constructor(
     private val extendedIngredientDao: ExtendedIngredientDao
 ) {
 
+    suspend fun deletePlanner(id:Long){
+        return plannerDao.deletePlanner(id)
+    }
     suspend fun insertPlanner(planner: PlannerEntity) {
         return plannerDao.insertPlanner(planner)
     }

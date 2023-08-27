@@ -12,4 +12,6 @@ interface PlannerDao {
     suspend fun insertPlanner(planner: PlannerEntity)
     @Query("SELECT * FROM PLANNER_TABLE")
     fun readPlanner(): Flow<List<PlannerEntity>>
+    @Query("DELETE  FROM PLANNER_TABLE WHERE id=:id")
+    suspend fun deletePlanner(id:Long)
 }
