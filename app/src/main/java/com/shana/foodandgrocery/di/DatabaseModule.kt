@@ -1,7 +1,11 @@
 package com.shana.foodandgrocery.di
 
 import android.content.Context
+import com.shana.foodandgrocery.data.database.ExtendedIngredientDao
+import com.shana.foodandgrocery.data.database.FavoriteRecipeDao
+import com.shana.foodandgrocery.data.database.PlannerDao
 import com.shana.foodandgrocery.data.database.RecipesDatabase
+import com.shana.foodandgrocery.data.database.ShoppingItemDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +22,15 @@ object DatabaseModule {
     ): RecipesDatabase = RecipesDatabase.getInstance(context)
 
     @Provides
-    fun provideDao(database: RecipesDatabase) = database.dao
+    fun provideRecipesDao(database: RecipesDatabase) = database.recipesDao
+    @Provides
+    fun provideShoppingItemDao(database: RecipesDatabase) = database.shoppingItemDao
+    @Provides
+    fun providePlannerDao(database: RecipesDatabase) = database.plannerDao
+    @Provides
+    fun provideFavoriteRecipeDao(database: RecipesDatabase) = database.favoriteRecipeDao
+    @Provides
+    fun provideExtendedIngredientDao(database: RecipesDatabase) = database.extendedIngredientDao
+
 
 }

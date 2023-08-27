@@ -1,11 +1,11 @@
 package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Upsert
+import com.shana.foodandgrocery.data.database.ExtendedIngredientDao
+import com.shana.foodandgrocery.data.database.FavoriteRecipeDao
+import com.shana.foodandgrocery.data.database.PlannerDao
 import com.shana.foodandgrocery.data.database.RecipesDao
+import com.shana.foodandgrocery.data.database.ShoppingItemDao
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity
@@ -21,15 +21,19 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
-    val recipesDao: RecipesDao
+    private val recipesDao: RecipesDao,
+    private val shoppingItemDao: ShoppingItemDao,
+    private val plannerDao: PlannerDao,
+    private val favoriteRecipeDao: FavoriteRecipeDao,
+    private val extendedIngredientDao: ExtendedIngredientDao
 ) {
 
     suspend fun insertPlanner(planner: PlannerEntity) {
-        return recipesDao.insertPlanner(planner)
+        return plannerDao.insertPlanner(planner)
     }
 
-    fun readPlanner():Flow<List<PlannerEntity>>{
-        return recipesDao.readPlanner()
+    fun readPlanner(): Flow<List<PlannerEntity>> {
+        return plannerDao.readPlanner()
     }
 
     fun readRecipes(): PagingSource<Int, RecipesEntity> {
@@ -37,15 +41,15 @@ class LocalDataSource @Inject constructor(
     }
 
     suspend fun deleteShoppingItem(shoppingItemEntity: ShoppingItemEntity) {
-        return recipesDao.deleteShoppingItem(shoppingItemEntity)
+        return shoppingItemDao.deleteShoppingItem(shoppingItemEntity)
     }
 
     fun checkRecipeIsFavorite(id: Long): Flow<Boolean> {
-        return recipesDao.checkRecipeIsFavorite(id)
+        return favoriteRecipeDao.checkRecipeIsFavorite(id)
     }
 
     fun readFavoriteRecipes(): Flow<List<Recipe>> {
-        return recipesDao.readFavoriteRecipes()
+        return favoriteRecipeDao.readFavoriteRecipes()
             .map { favoriteRecipeEntities ->
                 favoriteRecipeEntities.map {
                     it.toRecipe()
@@ -62,27 +66,28 @@ class LocalDataSource @Inject constructor(
     }
 
     suspend fun insertFavoriteRecipes(favoriteRecipeEntity: FavoriteRecipeEntity) {
-        recipesDao.insertFavoriteRecipe(favoriteRecipeEntity)
+        favoriteRecipeDao.insertFavoriteRecipe(favoriteRecipeEntity)
     }
 
 
     suspend fun deleteFavoriteRecipe(favoriteRecipeEntity: FavoriteRecipeEntity) {
-        recipesDao.deleteFavoriteRecipe(favoriteRecipeEntity)
+        favoriteRecipeDao.deleteFavoriteRecipe(favoriteRecipeEntity)
     }
 
     suspend fun deleteAllFavoriteRecipes() {
-        recipesDao.deleteAllFavoriteRecipes()
+        favoriteRecipeDao.deleteAllFavoriteRecipes()
     }
 
     suspend fun insertRecipeDto(recipesDto: List<RecipeDto>) {
         var recipes = mutableListOf<RecipesEntity>()
-        var RecipeExtendedIngredientCrossRefs =
+        var recipeExtendedIngredientCrossRefs =
             mutableListOf<RecipeExtendedIngredientCrossRefEntity>()
         recipesDto.forEach { item ->
             recipes.add(item.toRecipeEntity())
             item.extendedIngredientDtos.forEach { ing ->
-                var id = recipesDao.insertExtendedIngredient(ing.toExtendedIngredientEntity())
-                RecipeExtendedIngredientCrossRefs.add(
+                var id =
+                    extendedIngredientDao.insertExtendedIngredient(ing.toExtendedIngredientEntity())
+                recipeExtendedIngredientCrossRefs.add(
                     RecipeExtendedIngredientCrossRefEntity(
                         recipeId = item.id,
                         id = id
@@ -91,14 +96,13 @@ class LocalDataSource @Inject constructor(
             }
         }
         recipesDao.upsertRecipes(recipes)
-        recipesDao.upsertRecipeExtendedIngredientCrossRefs(RecipeExtendedIngredientCrossRefs)
+        recipesDao.upsertRecipeExtendedIngredientCrossRefs(recipeExtendedIngredientCrossRefs)
 
     }
 
-
     suspend fun clearRecipeWithIngredients() {
         recipesDao.deleteAllRecipeExtendedIngredient()
-        recipesDao.deleteAllExtendIngredient()
+        extendedIngredientDao.deleteAllExtendIngredient()
         return recipesDao.deleteAllRecipes()
     }
 
@@ -111,11 +115,11 @@ class LocalDataSource @Inject constructor(
     }
 
     suspend fun upsertShoppingList(shoppingList: List<ShoppingItemEntity>) {
-        return recipesDao.upsertShoppingList(shoppingList)
+        return shoppingItemDao.upsertShoppingList(shoppingList)
     }
 
     fun readShoppingList(): Flow<List<ShoppingItemEntity>> {
-        return recipesDao.readShoppingList()
+        return shoppingItemDao.readShoppingList()
     }
 
 }

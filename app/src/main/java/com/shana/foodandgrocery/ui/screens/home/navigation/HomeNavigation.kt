@@ -5,8 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.shana.foodandgrocery.config.Screen
-import com.shana.foodandgrocery.models.Recipe
+import com.shana.foodandgrocery.config.MainScreen
 import com.shana.foodandgrocery.ui.screens.home.HomeScreen
 import com.shana.foodandgrocery.util.Constants.Companion.START_DESTINATION
 
@@ -22,10 +21,10 @@ fun NavGraphBuilder.homeScreen(
 ) {
     navigation(
         route = START_DESTINATION,
-        startDestination = Screen.MainScreen.route
+        startDestination = MainScreen.MainMainScreen.route
     ) {
         composable(
-            route = Screen.MainScreen.route
+            route = MainScreen.MainMainScreen.route
         ) {
             HomeScreen(onRecipeClick = onRecipeClick, onSearchFilterClick = onSearchFilterClick)
         }

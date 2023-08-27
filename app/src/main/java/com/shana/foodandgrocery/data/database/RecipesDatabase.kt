@@ -20,7 +20,12 @@ import com.shana.foodandgrocery.util.Constants.Companion.DATABASE_NAME
 )
 @TypeConverters(ExtendedIngredientTypeConverter::class)
 abstract class RecipesDatabase : RoomDatabase() {
-    abstract val dao: RecipesDao
+    abstract val recipesDao: RecipesDao
+    abstract val extendedIngredientDao: ExtendedIngredientDao
+    abstract val favoriteRecipeDao: FavoriteRecipeDao
+    abstract val plannerDao: PlannerDao
+    abstract val shoppingItemDao: ShoppingItemDao
+
     companion object {
         @Volatile
         var instance: RecipesDatabase? = null

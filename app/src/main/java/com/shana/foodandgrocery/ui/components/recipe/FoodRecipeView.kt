@@ -27,11 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.shana.foodandgrocery.R
-import com.shana.foodandgrocery.config.Screen
 import com.shana.foodandgrocery.models.Recipe
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,7 +179,5 @@ fun FoodRecipeView(recipe: Recipe, onRecipeClick: (Long) -> Unit, showAsGrid: Bo
 
             }
         }
-
-
     }
 }

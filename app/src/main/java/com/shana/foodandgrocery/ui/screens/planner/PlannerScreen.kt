@@ -1,16 +1,11 @@
 package com.shana.foodandgrocery.ui.screens.planner
 
-import android.os.Build
-import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -28,8 +24,6 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.darkColors
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -46,12 +40,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.CalendarLayoutInfo
@@ -71,29 +63,38 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.YearMonth
-import java.util.Locale
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.util.TimeUtil.Companion.displayText
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.util.TimeZone
-
 
 
 @Composable
 fun PlannerScreen(plannerViewModel: PlannerViewModel = hiltViewModel()) {
     val plannerList =
-        plannerViewModel.plannerList.observeAsState().value?.groupBy { item -> LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(item.cookDate),TimeZone.getDefault().toZoneId()).toLocalDate()  }
+        plannerViewModel.plannerList.observeAsState().value?.groupBy { item ->
+            LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(item.cookDate), TimeZone.getDefault().toZoneId()
+            ).toLocalDate()
+        }
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
-    val flightsInSelectedDate = remember {
+    val plannersInSelectedDate = remember {
         derivedStateOf {
             val date = selection?.date
             if (date == null) emptyList() else plannerList?.get(date)?.orEmpty()
@@ -116,7 +117,6 @@ fun PlannerScreen(plannerViewModel: PlannerViewModel = hiltViewModel()) {
             // Clear selection if we scroll to a new month.
             selection = null
         }
-
         // Draw light content on dark background.
         CompositionLocalProvider(LocalContentColor provides darkColors().onSurface) {
             SimpleCalendarTitle(
@@ -165,8 +165,8 @@ fun PlannerScreen(plannerViewModel: PlannerViewModel = hiltViewModel()) {
             )
             Divider(color = MaterialTheme.colors.primary)
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(items = flightsInSelectedDate.value.orEmpty()) { flight ->
-                    FlightInformation(flight)
+                items(items = plannersInSelectedDate.value.orEmpty()) { flight ->
+                    PlannerInformation(flight)
                 }
             }
         }
@@ -246,16 +246,59 @@ private fun MonthHeader(
 }
 
 @Composable
-private fun LazyItemScope.FlightInformation(flight: PlannerEntity) {
-    Row(
-        modifier = Modifier.fillMaxWidth()
+private fun LazyItemScope.PlannerInformation(plannerItem: PlannerEntity) {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(8.dp, 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+        )
     ) {
-        Text(text = flight.recipeName, color = Color.Red)
+        Row(
+        ) {
+            SubcomposeAsyncImage(
+                model = plannerItem.img,
+                contentDescription = plannerItem.recipeName,
+                modifier = Modifier.size(80.dp),
+            ) {
+                val state = painter.state
+                if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+                    CircularProgressIndicator()
+                } else {
+                    SubcomposeAsyncImageContent()
+                }
+            }
+            Text(
+                text = plannerItem.recipeName,
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
+                color = MaterialTheme.colors.primary
+            )
+            FilledIconButton(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically),
+                onClick = {
 
+                },
+                colors = IconButtonDefaults.filledIconButtonColors(containerColor = androidx.compose.material3.MaterialTheme.colorScheme.error)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = stringResource(
+                        R.string.delete,
+                    ),
+                    tint = androidx.compose.material3.MaterialTheme.colorScheme.surface
+                )
+            }
+        }
     }
-    Divider(color = MaterialTheme.colors.primary, thickness = 2.dp)
 }
-
 
 
 @Composable

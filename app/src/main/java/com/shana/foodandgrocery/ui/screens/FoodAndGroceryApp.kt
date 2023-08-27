@@ -20,28 +20,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.NavGraph
 import com.shana.foodandgrocery.R
-import com.shana.foodandgrocery.config.Screen
+import com.shana.foodandgrocery.config.MainScreen
 import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
 import com.shana.foodandgrocery.rememberFoodAndGroceryState
-import com.shana.foodandgrocery.ui.components.error.ErrorView
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -97,8 +89,8 @@ fun FoodAndGroceryApp(
 
 @Composable
 fun BottomBar(
-    destinations: List<Screen>,
-    onNavigateToDestination: (Screen) -> Unit,
+    destinations: List<MainScreen>,
+    onNavigateToDestination: (MainScreen) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier,
 ) {
@@ -149,7 +141,7 @@ fun RowScope.AddItem(
     )
 }
 
-private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: Screen) =
+private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: MainScreen) =
     this?.hierarchy?.any {
         it.route?.contains(destination.route, true) ?: false
     } ?: false
