@@ -1,11 +1,7 @@
 package com.shana.foodandgrocery.di
 
 import android.content.Context
-import com.shana.foodandgrocery.data.database.ExtendedIngredientDao
-import com.shana.foodandgrocery.data.database.FavoriteRecipeDao
-import com.shana.foodandgrocery.data.database.PlannerDao
 import com.shana.foodandgrocery.data.database.RecipesDatabase
-import com.shana.foodandgrocery.data.database.ShoppingItemDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

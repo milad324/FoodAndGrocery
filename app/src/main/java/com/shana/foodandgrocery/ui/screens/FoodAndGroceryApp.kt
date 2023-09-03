@@ -31,7 +31,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.shana.foodandgrocery.FoodAndGroceryState
 import com.shana.foodandgrocery.NavGraph
 import com.shana.foodandgrocery.R
-import com.shana.foodandgrocery.config.MainScreen
+import com.shana.foodandgrocery.config.TopLevelDestination
 import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
 import com.shana.foodandgrocery.rememberFoodAndGroceryState
 
@@ -89,8 +89,8 @@ fun FoodAndGroceryApp(
 
 @Composable
 fun BottomBar(
-    destinations: List<MainScreen>,
-    onNavigateToDestination: (MainScreen) -> Unit,
+    destinations: List<TopLevelDestination>,
+    onNavigateToDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?,
     modifier: Modifier = Modifier,
 ) {
@@ -141,7 +141,7 @@ fun RowScope.AddItem(
     )
 }
 
-private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: MainScreen) =
+private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
     this?.hierarchy?.any {
         it.route?.contains(destination.route, true) ?: false
     } ?: false

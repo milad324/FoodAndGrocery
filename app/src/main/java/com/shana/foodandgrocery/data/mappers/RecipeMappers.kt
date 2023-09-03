@@ -38,7 +38,6 @@ fun RecipeWithExtendedIngredients.toRecipe(): Recipe {
             )
         })
 }
-
 fun RecipeDto.toRecipeEntity(): RecipesEntity {
     return RecipesEntity(
         recipeId = id,
@@ -57,7 +56,6 @@ fun RecipeDto.toRecipeEntity(): RecipesEntity {
         aggregateLikes = aggregateLikes
     )
 }
-
 fun ExtendedIngredientDto.toExtendedIngredientEntity(): ExtendedIngredientEntity {
     return ExtendedIngredientEntity(
         id = 0,
@@ -73,8 +71,6 @@ fun ExtendedIngredientDto.toExtendedIngredientEntity(): ExtendedIngredientEntity
         idEntity = id
     )
 }
-
-
 fun RecipesEntity.toRecipe(): Recipe {
     return Recipe(
         recipeId = recipeId,
@@ -94,7 +90,6 @@ fun RecipesEntity.toRecipe(): Recipe {
         extendedIngredients = listOf()
     )
 }
-
 fun Recipe.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
     return FavoriteRecipeEntity(
         aggregateLikes = aggregateLikes,
@@ -125,7 +120,6 @@ fun Recipe.toFavoriteRecipeEntity(): FavoriteRecipeEntity {
         veryHealthy = veryHealthy
     )
 }
-
 fun FavoriteRecipeEntity.toRecipe(): Recipe {
     return Recipe(aggregateLikes = aggregateLikes,
         recipeId = recipeId,
@@ -154,7 +148,6 @@ fun FavoriteRecipeEntity.toRecipe(): Recipe {
             )
         })
 }
-
 fun ExtendedIngredient.toShoppingList(recipe: Recipe): ShoppingItemEntity {
     return ShoppingItemEntity(
         recipeId = recipe.recipeId,

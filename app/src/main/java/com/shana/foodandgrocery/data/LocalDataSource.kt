@@ -1,11 +1,11 @@
 package com.shana.foodandgrocery.data
 
 import androidx.paging.PagingSource
-import com.shana.foodandgrocery.data.database.ExtendedIngredientDao
-import com.shana.foodandgrocery.data.database.FavoriteRecipeDao
-import com.shana.foodandgrocery.data.database.PlannerDao
-import com.shana.foodandgrocery.data.database.RecipesDao
-import com.shana.foodandgrocery.data.database.ShoppingItemDao
+import com.shana.foodandgrocery.data.database.dao.ExtendedIngredientDao
+import com.shana.foodandgrocery.data.database.dao.FavoriteRecipeDao
+import com.shana.foodandgrocery.data.database.dao.PlannerDao
+import com.shana.foodandgrocery.data.database.dao.RecipesDao
+import com.shana.foodandgrocery.data.database.dao.ShoppingItemDao
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.PlannerEntity
 import com.shana.foodandgrocery.data.database.entitis.RecipeExtendedIngredientCrossRefEntity

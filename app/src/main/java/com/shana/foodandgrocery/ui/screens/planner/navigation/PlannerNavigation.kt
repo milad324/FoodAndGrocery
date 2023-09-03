@@ -4,15 +4,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.shana.foodandgrocery.config.MainScreen
+import com.shana.foodandgrocery.config.TopLevelDestination
 import com.shana.foodandgrocery.ui.screens.planner.PlannerScreen
 
 fun NavController.navigatePlanner(navOptions: NavOptions? = null) {
-    this.navigate(MainScreen.Planner.route, navOptions)
+    this.navigate(TopLevelDestination.Planner.route, navOptions)
 }
 fun NavGraphBuilder.plannerScreen() {
     composable(
-        route = MainScreen.Planner.route
+        route = TopLevelDestination.Planner.route
     ) {
         PlannerScreen()
     }

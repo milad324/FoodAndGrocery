@@ -5,6 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.shana.foodandgrocery.data.database.dao.ExtendedIngredientDao
+import com.shana.foodandgrocery.data.database.dao.FavoriteRecipeDao
+import com.shana.foodandgrocery.data.database.dao.PlannerDao
+import com.shana.foodandgrocery.data.database.dao.RecipesDao
+import com.shana.foodandgrocery.data.database.dao.ShoppingItemDao
 import com.shana.foodandgrocery.data.database.entitis.ExtendedIngredientEntity
 import com.shana.foodandgrocery.data.database.entitis.FavoriteRecipeEntity
 import com.shana.foodandgrocery.data.database.entitis.PlannerEntity

@@ -13,7 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import androidx.tracing.trace
-import com.shana.foodandgrocery.config.MainScreen
+import com.shana.foodandgrocery.config.TopLevelDestination
 import com.shana.foodandgrocery.data.networkMonitoring.NetworkMonitor
 import com.shana.foodandgrocery.ui.screens.favorite.navigation.navigateFavorite
 import com.shana.foodandgrocery.ui.screens.home.navigation.navigateHome
@@ -52,13 +52,13 @@ class FoodAndGroceryState(
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
-    val currentTopLevelDestination: MainScreen?
+    val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when (currentDestination?.route) {
-            MainScreen.MainMainScreen.route -> MainScreen.MainMainScreen
-            MainScreen.ShoppingMainScreen.route -> MainScreen.ShoppingMainScreen
-            MainScreen.FavoriteMainScreen.route -> MainScreen.FavoriteMainScreen
-            MainScreen.Planner.route -> MainScreen.Planner
-            MainScreen.SearchFilterMainScreen.route -> MainScreen.SearchFilterMainScreen
+            TopLevelDestination.MainTopLevelDestination.route -> TopLevelDestination.MainTopLevelDestination
+            TopLevelDestination.ShoppingTopLevelDestination.route -> TopLevelDestination.ShoppingTopLevelDestination
+            TopLevelDestination.FavoriteTopLevelDestination.route -> TopLevelDestination.FavoriteTopLevelDestination
+            TopLevelDestination.Planner.route -> TopLevelDestination.Planner
+            TopLevelDestination.SearchFilterTopLevelDestination.route -> TopLevelDestination.SearchFilterTopLevelDestination
             else -> null
         }
     val isOffline = networkMonitor.isOnline
@@ -73,8 +73,8 @@ class FoodAndGroceryState(
      * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
      * route.
      */
-    val topLevelDestinations: List<MainScreen> = MainScreen.values().asList()
-    fun navigateToTopLevelDestination(topLevelDestination: MainScreen) {
+    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
+    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         trace("Navigation: ${topLevelDestination}") {
             val topLevelNavOptions = navOptions {
                 // Pop up to the start destination of the graph to
@@ -90,11 +90,11 @@ class FoodAndGroceryState(
                 restoreState = true
             }
             when (topLevelDestination) {
-                MainScreen.MainMainScreen -> navController.navigateHome(topLevelNavOptions)
-                MainScreen.ShoppingMainScreen -> navController.navigateShopping(topLevelNavOptions)
-                MainScreen.FavoriteMainScreen -> navController.navigateFavorite(topLevelNavOptions)
-                MainScreen.Planner -> navController.navigatePlanner(topLevelNavOptions)
-                MainScreen.SearchFilterMainScreen -> navController.navigateSearch(topLevelNavOptions)
+                TopLevelDestination.MainTopLevelDestination -> navController.navigateHome(topLevelNavOptions)
+                TopLevelDestination.ShoppingTopLevelDestination -> navController.navigateShopping(topLevelNavOptions)
+                TopLevelDestination.FavoriteTopLevelDestination -> navController.navigateFavorite(topLevelNavOptions)
+                TopLevelDestination.Planner -> navController.navigatePlanner(topLevelNavOptions)
+                TopLevelDestination.SearchFilterTopLevelDestination -> navController.navigateSearch(topLevelNavOptions)
                 //must be move
                 // Screen.ShowRecipe -> navController.navigateSearch(topLevelNavOptions)
             }

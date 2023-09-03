@@ -1,4 +1,4 @@
-package com.shana.foodandgrocery.data.database
+package com.shana.foodandgrocery.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
